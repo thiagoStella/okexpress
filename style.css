@@ -111,6 +111,10 @@ span{
     font-size: 1.6rem;
 }
 
+.exp-area p{
+    text-align: justify;
+}
+
 .main-content h1{
     font-size: var(--h1-font);
     font-weight: 900;
@@ -236,7 +240,9 @@ span{
     color: var(--other-color);
     margin-bottom: 20px;
 }
-
+.services-content .box{
+    text-align: center;
+}
 .box:hover{
     border: 1px solid var(--main-color);
     transform: translateY(-5px) scale(1.03);
@@ -391,8 +397,15 @@ form .send-btn:hover{
     }
     .hero{
         height: 90vh;
-        background-position: center;
+        width: 70%;
+        background: url(img/backgroundescuro.png);
+        background-position: right;
+        background-repeat: no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
     }
+
     .footer{
         padding: 18px 5%;
     }
