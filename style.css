@@ -44,6 +44,9 @@ header{
 span{
     color: var(--main-color);
 }
+header p{
+    color: var(--text-color);
+}
 
 .navlist{
     display: flex;
@@ -96,13 +99,12 @@ section{
 .hero{
     height: 100vh;
     width: 90%;
-    background: url(img/background.png);
-    background-position: right;
-    background-repeat: no-repeat;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
 }
+
+
 span{
     color: var(--main-color);
 }
@@ -110,17 +112,14 @@ span{
 .main-content h4{
     font-size: 1.6rem;
 }
+.main-content img{
+    height: 500px;
+}
 
 .exp-area p{
     text-align: justify;
 }
 
-.main-content h1{
-    font-size: var(--h1-font);
-    font-weight: 900;
-    margin: 20px 0 20px;
-    line-height: 1.2;
-}
 
 .main-content p{
     font-size: var(--p-font);
@@ -373,6 +372,7 @@ form .send-btn:hover{
     header.sticky{
         padding: 14px 8%;        
     }
+    
     section{
         padding: 90px 8% 80px;
     }
@@ -392,15 +392,15 @@ form .send-btn:hover{
     header.sticky{
         padding: 14px 5%;        
     }
+    .main-content img{
+        height: 400px;
+    }
     section{
         padding: 90px 5% 80px;
     }
     .hero{
         height: 90vh;
-        width: 70%;
-        background: url(img/backgroundescuro.png);
-        background-position: right;
-        background-repeat: no-repeat;
+        width: 70%;                       
         display: flex;
         align-items: center;
         justify-content: flex-start;
@@ -481,8 +481,11 @@ form .send-btn:hover{
 
 @media (max-width: 680px){
     .main-content p{
-        width: 100%;
-    } 
+        font-size: 25px;
+    }
+    .second-content img{
+        scale: 0.8;
+    }
 }
 
 @media (max-width: 470px){
@@ -490,6 +493,13 @@ form .send-btn:hover{
         --h1-font: 3rem;
         --h2-font: 2rem;        
     }
+    .main-content p{
+        font-size: 25px;
+    }
+    .second-content img{
+        scale: 0.;
+    }
+}
     .about-img img{
         text-align: center;
         width: 100%;
@@ -499,4 +509,5 @@ form .send-btn:hover{
         object-fit: cover;
         margin: 0 auto;
     }
-}
+
+   
