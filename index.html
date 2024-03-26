@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,14 +10,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <title>Teste</title>
+    <title>OK Express</title>
 
 </head>
 <body>
     <header>
         <div class="top-btn">
             <a href="https://api.whatsapp.com/send/?phone=41999003318&text=Gostaria%20de%20mais%20informações"
-             class="btn">Peça agora.</a>
+             class="btn" target="_blank">Peça agora.</a>
         </div>
         
         <div class="bx bx-menu" id="menu-icon" onclick="clickMenu()"></div>   
@@ -31,10 +31,15 @@
             <li><a href="#contact">Contato</a></li>
         </ul>
     <section class="hero" id="home">
-        <div class="main-content">
+        <div class="main-content" data-aos="fade-in">
             <img src="img/logonova.png" alt="logotipo">
             <p>Serviço de entregas rápidas ou programadas.</p>
             <p>Frelancer ou longo prazo.</p>     
+            <div class="social">
+                <a href="https://www.facebook.com/okexpresssaobraz?locale=pt_BR" target="_blank"><i class="ri-facebook-fill"></i></a> 
+                <a href="https://www.instagram.com/ok.motoboysexpresscuritiba/" target="_blank"><i class="ri-instagram-fill"></i></a> 
+                <a href="https://api.whatsapp.com/send/?phone=41999003318&text=Gostaria%20de%20mais%20informações" target="_blank"><i class="ri-whatsapp-fill"></i></a>
+            </div>
         </div>  
         <div class="second-content">
             <img src="img/background.png" alt="rapaz com uma caixa nas mãos">
@@ -42,10 +47,10 @@
     </section>
 
     <section class="about" id="about">
-        <div class="about-img">
+        <div class="about-img" data-aos="zoom-in-down">
             <img src="img/about-img.png" alt="rapaz de bone vermelho sorrindo">
         </div>
-        <div class="about-text">
+        <div class="about-text" data-aos="zoom-in-up">
             <h2>Com mais de <span>14 anos</span> entregando resultados</h2>
             <div class="exp-area">
                 <p>
@@ -57,10 +62,10 @@
     </section>
 
     <section class="services" id="services">
-        <div class="center-text">
+        <div class="center-text" data-aos="fade-down">
             <h2>Nossos <span>serviços</span></h2>
         </div>
-        <div class="services-content">
+        <div class="services-content" data-aos="zoom-in-up">
             <div class="box">
                 <i class="ri-file-warning-line ico"></i>
                 
@@ -107,10 +112,10 @@
     </section>
 
     <section class="portfolio" id="portfolio">
-        <div class="center-text">
+        <div class="center-text" data-aos="fade-down">
             <h2><span>Nossa</span> Galeria</h2>
         </div>
-        <div class="portfolio-content">
+        <div class="portfolio-content" data-aos="zooom-in-up">
             <div class="row">
                 <img src="img/galeria1.jpeg" alt="Foto de motos">                
             </div>
@@ -133,14 +138,14 @@
     </section>
 
     <section class="contact" id="contact">
-        <div class="center-text">
+        <div class="center-text" data-aos="fade-down">
             <h2>Nos <span>contate</span></h2>
         </div>
-        <div class="contact-form">
-            <form action="">
-                <input type="text" placeholder="Seu nome" required>
-                <input type="email" placeholder="Seu email" required>
-                <textarea name="" id="" cols="30" rows="10" placeholder="Digite sua menssagem"></textarea>
+        <div class="contact-form" data-aos="fade-in">
+            <form action="mailto:okmotoboyspress@gmal.com" method="POST" enctype="text/plain">
+                <input name="nome" type="text" placeholder="Seu nome" required>
+                <input name="email" type="email" placeholder="Seu email" required>
+                <textarea name="menssagem" id="" cols="30" rows="10" placeholder="Digite sua menssagem" required></textarea>
                 <input type="submit" name="btn" value="Enviar!" class="send-btn" >
             </form>
         </div>
@@ -168,5 +173,12 @@
 
 
     <script src="js/script.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      AOS.init({
+        offset: 300,
+        duration: 1400,
+      });
+    </script>
 </body>
 </html>

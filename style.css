@@ -26,6 +26,7 @@ body, html{
     position: relative;
     background-color: var(--bg-color);
     width: 100%;
+    
 }
 
 header{
@@ -64,6 +65,8 @@ span{
 
 #menu-icon{
     color: white;
+    font-size: 35px;    
+    cursor: pointer;
 }
 
 .navlist{
@@ -76,6 +79,28 @@ span{
     text-align: center;
     background-color: black;
     color: var(--text-color);    
+}
+.social{
+    margin-top: 40px;
+}
+.social i{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: var(--main-color);
+    border-radius: 50%;
+    backdrop-filter: brightness(88%);
+    font-size: 20px;
+    margin-right: 17px;
+    box-shadow: 0 0 20 px transparent;
+    cursor: pointer;
+    transition: all .50s ease;
+}
+.social i{
+    transform: scale(1.1);
+    box-shadow: 0 0 20px var(--main-color) ;
 }
 
 .hero{
@@ -117,6 +142,7 @@ span{
 .about-text h2{
     padding: 20px;
     text-align: center;
+    color: var(--text-color);
     font-size: var(--h2-font);
     line-height: 1.3;
     margin-bottom:  20px;
@@ -334,3 +360,28 @@ form .send-btn:hover{
     box-shadow: 2px 2px 20px #5fe690;
 }
 
+@media (min-width: 768px) {
+    .services-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .about {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 1rem;
+    }
+    .second-content img{
+        height: 500px;
+    }  
+
+}
+
+@media (min-width: 1200px) {
+    .second-content img{
+        height: 700px;
+    } 
+    #menu-icon {
+        font-size: 50px;
+    }
+    
+}
