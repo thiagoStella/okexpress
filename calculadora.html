@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF--8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Serviço</title>
+    <link rel="stylesheet" href="calculadora.css.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-section">
+            <h1 class="title">Novo Serviço</h1>
+
+            <div class="form-group">
+                <label for="vehicle-type">Tipo de veículo</label>
+                <select id="vehicle-type" name="vehicle-type">
+                    <option value="moto">Moto</option>
+                    <option value="carro">Carro</option>
+                    <option value="van">Van</option>
+                </select>
+            </div>
+
+            <div class="address-section">
+                <button class="my-address-btn"><i class="fas fa-home"></i> MEU ENDEREÇO</button>
+                <div class="input-group">
+                    <div class="form-group cep-field">
+                        <label for="cep">CEP</label>
+                        <input type="text" id="cep" placeholder="Ex: 01234-567">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="address">Endereço</label>
+                        <input type="text" id="address" placeholder="Ex: Avenida Miguel Curi">
+                        <i class="fas fa-map-marker-alt input-icon"></i>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="form-group half-width">
+                        <label for="number">Número</label>
+                        <input type="text" id="number" placeholder="Ex: 111">
+                    </div>
+                    <div class="form-group half-width">
+                        <label for="complement">Complemento</label>
+                        <input type="text" id="complement" placeholder="Ex: Conj. 123, Sala x">
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="no-number">
+                    <label for="no-number">Sem número</label>
+                </div>
+            </div>
+
+            <div class="action-section">
+                <label>O que devemos fazer?</label>
+                <div class="action-buttons">
+                    <button class="action-btn">COLETA</button>
+                    <button class="action-btn active">ENTREGA</button>
+                    <button class="action-btn">OUTROS</button>
+                </div>
+                <textarea placeholder="O que devemos fazer?"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-cancel">CANCELAR</button>
+                <button class="btn btn-confirm">CONFIRMAR</button>
+            </div>
+
+            <div class="footer-buttons">
+                <button class="btn btn-new-address"><i class="fas fa-plus"></i> NOVO ENDEREÇO</button>
+                <button class="btn btn-next-step"><i class="fas fa-check"></i> PRÓXIMA ETAPA</button>
+            </div>
+        </div>
+
+        <div class="map-section">
+            <div class="info-header">
+                <div class="info-box">
+                    <i class="fas fa-dollar-sign icon"></i>
+                    <div>
+                        <span class="info-label">Valor</span>
+                        <span class="info-value">R$ 0.00</span>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <i class="fas fa-map-marker-alt icon"></i>
+                    <div>
+                        <span class="info-label">Distância</span>
+                        <span class="info-value">0km</span>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <i class="fas fa-clock icon"></i>
+                    <div>
+                        <span class="info-label">Tempo</span>
+                        <span class="info-value">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="map-placeholder">
+                <img src="https://i.imgur.com/gsi5vif.png" alt="Mapa da localização">
+            </div>
+        </div>
+    </div>
+</body>
+</html>
