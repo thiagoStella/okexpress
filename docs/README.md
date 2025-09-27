@@ -12,7 +12,7 @@ Este projeto é uma ferramenta web para cálculo de valor de corridas de motofre
 
 A documentação completa do projeto, incluindo o processo de levantamento de requisitos, a definição da User Story e os Critérios de Aceite para o MVP, pode ser encontrada no link abaixo:
 
-➡️ **[Documentação e Requisitos do Projeto](./docs/REQUISITOS_MVP_V1.md)**
+➡️ **[Documentação e Requisitos do Projeto](https://github.com/thiagoStella/okexpress/blob/main/docs/REQUISITOS_MVP_V1.md)**
 
 ## ⚙️ Como Rodar o Projeto
 
