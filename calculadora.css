@@ -4,17 +4,14 @@
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
-    /* [MUDANÇA] Cor de fundo principal alterada */
     background-color: #1b1f24; 
-    /* [MUDANÇA] Cor de texto padrão alterada */
-    color: #f0f0f0; /* Um branco suave para textos gerais */
+    color: #f0f0f0;
 }
 
 .container {
     display: flex;
     height: 100vh;
-    /* [MUDANÇA] Fundo do container principal */
-    background-color: #2a2f36; /* Um tom um pouco mais claro que o fundo do body */
+    background-color: #2a2f36;
     border: 1px solid #3a3f44;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
@@ -30,9 +27,12 @@ body {
 
 .title {
     font-size: 24px;
-    /* [MUDANÇA] Cor do título principal */
     color: #ed1e22; 
     margin-bottom: 20px;
+}
+
+.title span {
+    color: white;
 }
 
 .form-group {
@@ -45,11 +45,9 @@ body {
     font-size: 14px;
     font-weight: 500;
     margin-bottom: 8px;
-    /* [MUDANÇA] Cor dos labels */
     color: #e0e0e0;
 }
 
-/* [MUDANÇA] Estilo dos inputs, selects e textarea para o tema escuro */
 .form-group input, .form-group select, textarea {
     width: 100%;
     padding: 12px;
@@ -58,16 +56,15 @@ body {
     border-radius: 5px;
     font-size: 14px;
     box-sizing: border-box;
-    color: #f0f0f0; /* Cor do texto digitado */
+    color: #f0f0f0;
 }
-/* Cor do placeholder */
+
 ::placeholder {
     color: #888;
 }
 
 .form-group select {
     appearance: none;
-    /* [MUDANÇA] Ícone da seta do select para branco */
     background: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E') no-repeat right 15px center;
     background-color: #1b1f24;
     background-size: 10px;
@@ -81,7 +78,7 @@ body {
 }
 
 .my-address-btn {
-    background-color: #ed1e22; /* Usando o vermelho principal */
+    background-color: #ed1e22;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -108,6 +105,20 @@ body {
     margin-bottom: 20px;
 }
 
+.map-section {
+    width: 55%;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.map-placeholder img {
+    width: 50%;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto; 
+}
 
 
 /* =============================================== */
@@ -116,35 +127,119 @@ body {
 
 @media (max-width: 768px) {
 
-    /* Garante que NUNCA haverá rolagem horizontal */
     body {
         overflow-x: hidden;
     }
 
-    /* 1. Muda o container principal para o layout de coluna e altura automática */
     .container {
         flex-direction: column; 
-        height: auto;           
+        height: auto;          
     }
 
-    /* 2. Faz as duas seções principais ocuparem 100% da largura E ADICIONA O RESPIRO */
     .form-section, .map-section {
         width: 100%;
         border-right: none;
-        padding-left: 15px;     /* Cria o espaço interno na esquerda */
-        padding-right: 15px;    /* Cria o espaço interno na direita */
-        box-sizing: border-box; /* Garante que o padding não crie uma barra de rolagem horizontal */
+        padding-left: 15px;
+        padding-right: 15px;
+        box-sizing: border-box;
     }
 
-    /* 3. Ajusta o cabeçalho de informações para ficar mais legível */
     .info-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
     }
     
-    /* 4. Garante que os botões do rodapé não fiquem espremidos */
     .footer-buttons {
         flex-direction: column;
     }
+}
+
+
+/* =============================================== */
+/* ESTILOS ADICIONAIS PARA A CALCULADORA - POLIMENTO */
+/* =============================================== */
+
+/* --- Estilo do Botão de Cálculo --- */
+#submit-button {
+    background-color: #ed1e22;
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+#submit-button:hover {
+    background-color: #c81a1d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+#submit-button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    transform: translateY(0);
+}
+
+
+/* --- Estilo Moderno para a Área de Resultado --- */
+.info-header {
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.info-box {
+    background-color: #1b1f24;
+    border: 1px solid #3a3f44;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.info-box .icon {
+    font-size: 2rem;
+    color: #ed1e22;
+    margin-right: 15px;
+    width: 40px;
+    text-align: center;
+}
+
+.info-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #c3cad5;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    display: block;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* =============================================== */
+/* CONTAINER PARA LIMITAR LARGURA EM TELAS GRANDES */
+/* =============================================== */
+.container-geral {
+    width: 100%;
+    max-width: 1440px; /* <<-- A 'limitação máxima'. Pode ajustar se quiser. */
+    margin: 0 auto;    /* Truque para centralizar o container na tela. */
+    padding: 0 40px;   /* Um respiro nas laterais para telas menores. */
+    box-sizing: border-box; /* Garante que o padding não aumente a largura total. */
+
+    /* Agora este container vai organizar o conteúdo */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
 }
