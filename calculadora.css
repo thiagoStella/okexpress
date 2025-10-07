@@ -77,20 +77,6 @@ body {
     color: #007bff;
 }
 
-.my-address-btn {
-    background-color: #ed1e22;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-.my-address-btn i {
-    margin-right: 8px;
-}
-
 .input-group {
     display: flex;
     gap: 15px;
@@ -224,6 +210,71 @@ body {
     font-size: 1.6rem;
     font-weight: bold;
     color: #ffffff;
+}
+
+/* ======================================================== */
+/* ESTILO UNIFICADO E FINAL PARA OS BOTÕES DO FORMULÁRIO    */
+/* ======================================================== */
+
+/* 1. Regra base que se aplica a AMBOS os botões */
+#submit-button,
+#whatsapp-button-container .my-address-btn {
+    width: 100%;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    /* --- A MÁGICA DO ALINHAMENTO PERFEITO COM FLEXBOX --- */
+    display: flex;
+    align-items: center;    /* Alinha verticalmente */
+    justify-content: center; /* Alinha horizontalmente */
+}
+
+/* 2. Efeitos :hover para AMBOS os botões */
+#submit-button:hover,
+#whatsapp-button-container .my-address-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* 3. Cores específicas para cada botão */
+#submit-button {
+    background-color: #ed1e22; /* Vermelho */
+    color: white;
+}
+#submit-button:hover {
+    background-color: #c81a1d;
+}
+
+#whatsapp-button-container .my-address-btn {
+    background-color: #25D366; /* Verde */
+    color: white;
+}
+#whatsapp-button-container .my-address-btn:hover {
+    background-color: #1DA851;
+}
+
+#whatsapp-button i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+
+    /* --- AJUSTE FINO DE ALINHAMENTO --- */
+    position: relative;
+    top: 2px; /* Empurra o ícone 2 pixels para baixo */
+}
+
+/* 5. Estilo para o botão de cálculo desabilitado */
+#submit-button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    transform: translateY(0);
+    box-shadow: none;
 }
 
 /* =============================================== */
