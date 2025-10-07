@@ -11,28 +11,29 @@
     <div class="container">
         <div class="form-section">
             
-            <h1 class="title">Calcular Frete</h1>
+            <h1 class="title"><span>Calcular</span> Frete</h1>
 
             <form id="calc-form">
-
                 <div class="form-group full-width">
                     <label for="origin-input">Endereço de Origem</label>
                     <input type="text" id="origin-input" placeholder="Rua, número, bairro, cidade..." required>
-                    <i class="fas fa-map-marker-alt input-icon"></i>
                 </div>
 
                 <div class="form-group full-width">
                     <label for="destination-input">Endereço de Destino</label>
                     <input type="text" id="destination-input" placeholder="Rua, número, bairro, cidade..." required>
-                    <i class="fas fa-map-marker-alt input-icon"></i>
                 </div>
-
-                <div class="form-actions">
-                    <button type="submit" id="submit-button" class="btn btn-confirm">CONFIRMAR CÁLCULO</button>
-                </div>
+                
+                <button type="submit" id="submit-button" class="btn btn-confirm">Confirmar Cálculo</button>
             </form>
-            
-            <div id="result-div" style="text-align: center; margin-top: 20px; font-weight: bold;"></div>
+
+            <div id="result-div" style="text-align: center; margin-top: 20px; font-weight: bold; color: white;"></div>
+
+            <div id="whatsapp-button-container" style="display: none; margin-top: 20px;">
+                <a href="#" id="whatsapp-link" class="my-address-btn" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Peça Agora via WhatsApp
+                </a>
+            </div>
 
         </div>
 
@@ -52,13 +53,13 @@
                         <span class="info-value" id="result-distancia">0 km</span>
                     </div>
                 </div>
-                </div>
+            </div>
             <div class="map-placeholder">
-                <img src="img/mapa-estatico.png" alt="Mapa da localização">
+                <img src="https://i.imgur.com/gsi5vif.png" alt="Mapa da localização">
             </div>
         </div>
     </div>
-    <!-- Problema no deploy da branch -->
+
     <script src="js/calculadora.js"></script>
 </body>
 </html>

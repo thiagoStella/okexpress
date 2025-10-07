@@ -407,6 +407,11 @@ form .send-btn:hover{
     }
     /* ...etc... */
 }
+#whatsapp-link i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
 
 @media (min-width: 1200px) {
     .second-content img{
