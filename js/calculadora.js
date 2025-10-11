@@ -1,6 +1,6 @@
 // coloque a URL final aqui depois do deploy, ex:
 // const API_URL = "https://<sua-api-id>.execute-api.sa-east-1.amazonaws.com/Prod/calcular";
-const API_URL = "https://yei1rofp9i.execute-api.sa-east-1.amazonaws.com/calcular";
+const API_URL = "https://dqm2ctsusi.execute-api.sa-east-1.amazonaws.com/calcular";
 
 const calcForm = document.getElementById('calc-form');
 const originInput = document.getElementById('origin-input');
