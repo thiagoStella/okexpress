@@ -96,3 +96,65 @@ _____________________________________________
 
 
 
+Minuta de Definição de Requisitos | v1.1: Refinamento e Foco em Contratos
+Data: 13 de Outubro de 2025
+Participantes: Analista de Requisitos (Gemini), Thiago Stella Pontes (Stakeholder/Desenvolvedor)
+
+1. Problema Central Identificado
+O MVP v1.0 está funcional, mas o feedback do uso inicial revelou oportunidades de melhoria na experiência do usuário e no alinhamento com a identidade visual da empresa. Adicionalmente, o site atual não possui uma área clara e um chamado à ação (call-to-action) específico para atrair clientes de maior valor: os comerciantes interessados em contratos de longo prazo.
+
+2. Objetivo Estratégico da Sprint
+Refinar a interface do site e da calculadora para fortalecer a marca e melhorar a usabilidade. Introduzir uma nova seção de conteúdo e um ponto de conversão dedicado para a prospecção ativa de clientes de contrato, além de implementar uma melhoria chave de usabilidade na calculadora (busca por CEP).
+
+3. User Stories Aprovadas
+"Como um Visitante, eu quero navegar em um site com um visual mais profissional e textos mais claros, para que a minha percepção de confiança na empresa aumente."
+
+"Como um Dono de Comércio, eu quero entender facilmente como funciona o serviço de contrato e ter um botão direto para iniciar a conversa, para que eu possa agilizar a parceria com a OK Express."
+
+"Como um Usuário da Calculadora, eu quero preencher meu CEP e ter o endereço preenchido automaticamente, para que o processo de cotação seja ainda mais rápido e preciso."
+
+4. Critérios de Aceite (Definition of "Done")
+Para que a versão 1.1 seja considerada completa e "pronta", os seguintes critérios devem ser atendidos:
+
+Ajustes na Página Principal (index.html):
+
+Identidade Visual: O plano de fundo (background) do site deve ser substituído pela imagem timbrada oficial da OK Express.
+
+Texto do Botão Principal: O texto do botão no topo do site deve ser alterado de "Peça agora" para "Faça já sua consulta".
+
+Texto do Botão de Ação: O texto do botão de chamada para a calculadora na seção "hero" deve ser alterado de "calcular frete" para "Calcule seu frete".
+
+Destino do Botão Principal: O botão "Faça já sua consulta" (antigo "Peça agora") deve agora redirecionar o usuário para a página calculadora.html.
+
+Responsividade do Menu: O CSS do menu de navegação deve ser adaptado para garantir uma exibição correta e elegante em telas de desktop.
+
+Expansão da Seção 'Sobre' (index.html):
+
+Conteúdo Adicional sobre Contratos: A seção about será expandida. Além do texto original (que será mantido), um novo conteúdo explicando como funciona o modelo de contrato para comerciantes deve ser adicionado.
+
+Ponto de Conversão (Contratos): Ao final do novo texto sobre contratos, um novo botão de WhatsApp deve ser inserido. Este botão deve direcionar o usuário para uma conversa com a mensagem pré-definida: "Gostaria de falar a respeito de contrato".
+
+Ajustes na Página da Calculadora (calculadora.html):
+
+Layout dos Resultados: A exibição dos resultados de "Valor" e "Distância" deve ser movida para a mesma div dos campos de endereço. A fonte dos resultados deve ser padronizada para não ter um destaque excessivo em relação aos outros elementos.
+
+Área de Marketing: A área anteriormente ocupada pelo mapa deve ser utilizada para exibir uma propaganda ou material de marketing da própria OK Express.
+
+Nova Funcionalidade (Busca por CEP):
+
+Implementação da Busca: Um novo campo para "CEP" deve ser adicionado aos formulários de origem e destino.
+
+Preenchimento Automático: Ao digitar um CEP válido e sair do campo (evento "blur"), o sistema deve fazer uma consulta a uma API externa (ex: ViaCEP) e preencher automaticamente os campos de Endereço, Bairro e Cidade correspondentes.
+
+5. Escopo Futuro (Itens em Backlog para v2.0)
+As seguintes funcionalidades de maior escopo permanecem no backlog para a próxima grande versão do produto:
+
+Área de login para comerciantes cadastrados.
+
+Integração com métodos de pagamento para solicitação da corrida.
+
+Disparo de notificações de novos pedidos (via e-mail ou WhatsApp) para o administrador.
+
+Sistema de cadastro, gestão e atribuição de motoboys (potencialmente em um PWA - Progressive Web App).
+
+_____________________________________________________________________________________________________
