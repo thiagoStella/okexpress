@@ -18,23 +18,33 @@
     --h1-font: 5rem;
     --h2-font: 2.9rem;
     --p-font: 1.5rem;
-
-    
 }
 
 body, html{
     position: relative;
-    background-color: var(--bg-color);
+    background-color: var(--bg-color); /* Fundo sólido para o resto do site */
     width: 100%;
-    
 }
 
 header{
+    position: fixed; /* Fixa o header no topo da tela */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Garante que ele fique na frente de tudo */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 20px 4%; /* Usando porcentagem para ser mais responsivo */
+    background: transparent; /* <<-- AQUI! Fundo transparente por padrão */
+    transition: all .40s ease; /* Efeito suave na mudança de cor */
 }
+
+header.window-scrolled {
+    background: var(--bg-color); /* Aplica a cor de fundo escura ao rolar */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
 span{
     color: var(--main-color);
 }
@@ -80,9 +90,6 @@ span{
     background-color: black;
     color: var(--text-color);    
 }
-.social{
-    margin-top: 40px;
-}
 .social i{
     display: inline-flex;
     align-items: center;
@@ -94,26 +101,73 @@ span{
     backdrop-filter: brightness(88%);
     font-size: 20px;
     margin-right: 17px;
-    box-shadow: 0 0 20 px transparent;
+    box-shadow: 0 0 20px transparent;
     cursor: pointer;
     transition: all .50s ease;
 }
-.social i{
+.social i:hover { /* Corrigido */
     transform: scale(1.1);
     box-shadow: 0 0 20px var(--main-color) ;
 }
 
-.hero{
-    height: 100vh;                
+
+/* =============================================== */
+/* --- SEÇÃO HERO COM BACKGROUND ---               */
+/* =============================================== */
+
+.hero {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    
+    background-image: url('img/ok-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+.container-geral {
+    position: relative;
+    z-index: 2; /* Garante que fique na frente do overlay do fundo */
+    width: 100%;
+    max-width: 1440px; /* <<-- A LARGURA MÁXIMA QUE VOCÊ QUERIA */
+    margin: 0 auto;    /* Centraliza o container na tela */
+    padding: 0 40px;   /* Um respiro nas laterais */
+    box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
-    text-align: center;
+    gap: 2rem;
 }
+/* Efeito de Overlay para melhorar a legibilidade */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Camada preta com 60% de opacidade */
+    z-index: 1;
+}
+
+/* Conteúdo do Hero (para ficar na frente do overlay) */
+.main-content, .second-content {
+    position: relative;
+    z-index: 2; /* Garante que o conteúdo fique visível */
+}
+
 .main-content{
     justify-content: center;
     padding: 50px;
     color: var(--text-color);
+}
+.social{
+    margin-top: 40px;
 }
 
 .second-content{
@@ -123,15 +177,20 @@ span{
     height: 300px;
 }
 
+/* =============================================== */
+/* --- DEMAIS SEÇÕES ---                           */
+/* =============================================== */
+
 .about {
     background: var(--second-bg-color);
     align-items: center;
     gap: 1rem;
+    padding: 40px; /* Adicionado padding para respiro */
 }
 .about-img img{
     width: 90%;
-    margin: 20px;    
-    justify-content: center;
+    margin: 20px auto;
+    display: block;
     max-width: 530px;
     border-radius: 50%;
     object-fit: cover;
@@ -206,13 +265,13 @@ span{
     font-size: 30px;
     font-weight: 700;
     margin-bottom: 10px;
+    color: var(--text-color); /* Adicionado cor para garantir contraste */
 }
 
-.box p{
-    font-size: var(--p-font);
-    font-weight: 400;
+.box ul { /* Adicionado para estilizar a lista */
     color: var(--other-color);
-    margin-bottom: 20px;
+    text-align: left;
+    display: inline-block;
 }
 
 .box:hover{
@@ -242,23 +301,15 @@ span{
 .row{
     background: #2d343f;
     border-radius: 28px;
-    border: 1px solid 5px var(--main-color);
+    border: 1px solid var(--main-color); /* Corrigido de "5px" */
     box-shadow: 0 0 5px var(--main-color);
     padding: 20px;
     transition: all .50s ease;
 }
 
 .row:hover{
-    border: 1px solid var(--main-color);
     transform: translateY(-5px) scale(1.03);
     cursor: pointer;
-}
-
-.main-row{
-    text-align: center;
-    font-size: 30px;
-    font-weight: 900;
-    color: var(--other-color);
 }
 
 .contact-form{
@@ -270,7 +321,8 @@ span{
 
 .contact-form form{
     position: relative;
-    width: 600px;
+    width: 100%;
+    max-width: 600px; /* Adicionado max-width para responsividade */
 }
 
 form input, form textarea{
@@ -337,30 +389,67 @@ form .send-btn:hover{
     font-size: 27px;
 }
 
-.icon{
+
+
+/* =============================================== */
+/* --- BOTÃO FLUTUANTE DO WHATSAPP (COM ANIMAÇÃO) -- */
+/* =============================================== */
+
+.whatsapp {
     position: fixed;
-    bottom: 65px;
-    right: 30px;
-    font-size: 30px;
-    background-color: #01e675;
-    color: white !important; 
-    border-radius: 50%;
-    padding: 10px;
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
+    bottom: 40px;
+    right: 40px;
+    background-color: #25D366; /* Cor oficial do WhatsApp */
+    color: #fff;
+    border-radius: 50px;
     text-align: center;
-    z-index: 100;
-    box-shadow: 2px 2px 2px #c0bdbd;
+    font-size: 30px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    
+    /* Centraliza o ícone perfeitamente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: all 0.3s ease;
 }
 
-.icon:hover{
-    background-color: white;
-    color: #029e3b;
-    font-weight: 300;
-    box-shadow: 2px 2px 20px #5fe690;
+/* Efeito ao passar o mouse */
+.whatsapp:hover {
+    transform: scale(1.1);
+    background-color: #1DA851; /* Tom mais escuro no hover */
 }
 
-/* ESTILO DO BOTÃO DE CHAMADA PARA A CALCULADORA */
+/* O "eco" ou "outline" que vai pulsar */
+.whatsapp:after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1; /* Fica atrás do botão principal */
+    background-color: #25D366;
+    border-radius: 50%;
+    
+    /* A mágica da animação */
+    animation: pulse 2s infinite;
+}
+
+/* A definição da animação "pulse" */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1.8); /* O tamanho final do "eco" */
+        opacity: 0; /* Desaparece suavemente */
+    }
+}
 .cta-btn {
     display: inline-block;
     margin-top: 25px;
@@ -382,6 +471,7 @@ form .send-btn:hover{
 }
 
 @media (min-width: 768px) {
+    /* --- Regras que você já tinha e estão corretas --- */
     .services-content {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -393,16 +483,69 @@ form .send-btn:hover{
     }
     .second-content img{
         height: 500px;
-    }  
-
-}
-
-@media (min-width: 1200px) {
-    .second-content img{
-        height: 700px;
-    } 
-    #menu-icon {
-        font-size: 50px;
     }
     
+    /* ======================================= */
+    /* --- REGRAS DO MENU PARA DESKTOP ---     */
+    /* ======================================= */
+
+    /* Esconde o ícone do menu hamburger */
+    #menu-icon {
+        display: none;
+    }
+
+    /* Regra .navlist ATUALIZADA para centralização perfeita e efeito hover */
+    .navlist {
+        display: flex;
+        align-items: center;
+        gap: 2.5rem;
+        
+        /* Centraliza a lista no meio do header */
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* Estilo dos links no desktop - ESTADO PADRÃO */
+    .navlist a {
+        background: transparent;
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--text-color);
+        
+        /* Prepara o espaço para o hover para evitar "pulos" no layout */
+        padding: 11px 16px;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        
+        transition: all 0.4s ease;
+    }
+
+    /* Efeito ao passar o mouse nos links do desktop - ESTADO HOVER */
+    .navlist a:hover {
+        color: var(--main-color);
+        border: 2px solid var(--main-color);
+        box-shadow: 0 0 20px var(--main-color);
+    }
+}
+
+/* Para telas de notebook e tablet */
+@media (min-width: 768px) and (max-width: 1180px) {
+    .hero .container-geral {
+        flex-direction: column; /* Empilha o conteúdo */
+        justify-content: center;
+        align-items: center; /* Centraliza horizontalmente */
+        text-align: center;
+        padding-top: 80px; /* Garante que o texto não suba */
+    }
+
+    .hero .second-content img {
+        height: 400px; /* Diminui a imagem para 400px */
+        margin-top: 2rem; /* Adiciona um espaço superior à imagem */
+        max-width: 90%; /* Garante que ela não transborde */
+    }
+
+    .hero .main-content {
+        text-align: center;
+    }
 }

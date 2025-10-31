@@ -11,32 +11,28 @@
     <div class="container">
         <div class="form-section">
             
-            <h1 class="title">Calcular Frete</h1>
+            <h1 class="title"><span>Calcular</span> Frete</h1>
 
             <form id="calc-form">
-
                 <div class="form-group full-width">
                     <label for="origin-input">Endereço de Origem</label>
                     <input type="text" id="origin-input" placeholder="Rua, número, bairro, cidade..." required>
-                    <i class="fas fa-map-marker-alt input-icon"></i>
                 </div>
-
                 <div class="form-group full-width">
                     <label for="destination-input">Endereço de Destino</label>
                     <input type="text" id="destination-input" placeholder="Rua, número, bairro, cidade..." required>
-                    <i class="fas fa-map-marker-alt input-icon"></i>
                 </div>
-
-                <div class="form-actions">
-                     <button type="submit" id="submit-button" class="btn btn-confirm">CONFIRMAR CÁLCULO</button>
+                <div class="form-group full-width">
+                    <button type="submit" id="submit-button" class="btn btn-confirm">Confirmar Cálculo</button>
+                </div>
+                <div id="result-div" class="form-group" style="text-align: center; font-weight: bold; color: white;"></div>
+                <div id="whatsapp-button-container" class="form-group full-width" style="display: none;">
+                    <button type="button" id="whatsapp-button" class="my-address-btn">
+                        <i class="fab fa-whatsapp"></i> Peça Agora via WhatsApp
+                    </button>
                 </div>
             </form>
 
-            <div id="result-div" style="text-align: center; margin-top: 20px; font-weight: bold;"></div>
-
-        </div>
-
-        <div class="map-section">
             <div class="info-header">
                 <div class="info-box">
                     <i class="fas fa-dollar-sign icon"></i>
@@ -52,13 +48,19 @@
                         <span class="info-value" id="result-distancia">0 km</span>
                     </div>
                 </div>
-                </div>
-            <div class="map-placeholder">
-                <img src="https://i.imgur.com/gsi5vif.png" alt="Mapa da localização">
             </div>
+
+        </div>
+        
+        <div class="map-section">
+            <img src="img/caverna.jpg" alt="Propaganda OK Express" class="marketing-image">
+        
+            <a href="https://api.whatsapp.com/send/?phone=41999003318&text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20como%20revolucionar%20meu%20delivery." class="cta-whatsapp-marketing" target="_blank">
+                <i class="fab fa-whatsapp"></i> REVOLUCIONAR DELIVERY
+            </a>
         </div>
     </div>
 
-    <script src="js/calculadora.js"></script>
+    <script src="js/calculadora-v2.js"></script>
 </body>
 </html>
