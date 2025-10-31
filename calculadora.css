@@ -46,10 +46,12 @@ body {
 
 .map-section {
     width: 55%;
-    padding: 30px; /* Adiciona um respiro para a imagem */
+    padding: 30px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 30px;
 }
 
 /* =============================================== */
@@ -67,7 +69,7 @@ body {
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* REQUISITO 3.5: Layout mais compacto */
     position: relative;
 }
 
@@ -81,7 +83,7 @@ body {
 
 .form-group input {
     width: 100%;
-    padding: 15px;
+    padding: 12px 15px; /* REQUISITO 3.5: Layout mais compacto */
     background-color: #1b1f24;
     border: 1px solid #555;
     border-radius: 5px;
@@ -96,7 +98,7 @@ body {
 #submit-button,
 #whatsapp-button {
     width: 100%;
-    padding: 15px 20px;
+    padding: 12px 20px; /* REQUISITO 3.5: Layout mais compacto */
     border: none;
     border-radius: 5px;
     font-size: 1rem;
@@ -127,46 +129,70 @@ body {
 }
 
 /* =============================================== */
-/* --- 5. ÁREA DE RESULTADO E IMAGEM ---           */
+/* --- 5. ÁREA DE RESULTADO E MARKETING ---        */
 /* =============================================== */
 .form-section .info-header {
-    margin-top: 30px;
+    margin-top: 20px; /* REQUISITO 3.5: Layout mais compacto */
     border-top: 1px solid #3a3f44;
-    padding-top: 30px;
+    padding-top: 20px; /* REQUISITO 3.5: Layout mais compacto */
 }
 .info-box {
     background-color: #1b1f24;
     border: 1px solid #3a3f44;
     border-radius: 8px;
-    padding: 15px;
+    padding: 12px 15px; /* REQUISITO 3.5: Layout mais compacto */
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* REQUISITO 3.5: Layout mais compacto */
 }
 .info-box .icon {
-    font-size: 2rem;
+    font-size: 1.5rem; /* REQUISITO 3.2: Fonte padronizada */
     color: #ed1e22;
-    margin-right: 20px;
-    width: 40px;
+    margin-right: 15px;
+    width: 30px;
     text-align: center;
 }
 .info-label {
     display: block;
     font-size: 0.9rem;
     color: #c3cad5;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 .info-value {
-    font-size: 1.5rem;
+    font-size: 1.4rem; /* REQUISITO 3.2: Fonte padronizada */
     font-weight: bold;
     color: #ffffff;
 }
-/* --- CORREÇÃO PARA A IMAGEM GRANDE --- */
 .marketing-image {
     max-width: 100%;
-    max-height: 70%; /* <<-- AQUI ESTÁ A MUDANÇA */
+    max-height: 70%;
     border-radius: 8px;
     object-fit: contain;
+}
+.cta-whatsapp-marketing {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 30px;
+    background-color: #25D366;
+    color: white;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border: none;
+}
+.cta-whatsapp-marketing:hover {
+    background-color: #1DA851;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+.cta-whatsapp-marketing i {
+    margin-right: 12px;
+    font-size: 1.4rem;
 }
 
 /* =============================================== */
@@ -192,85 +218,4 @@ body {
     .map-section {
         border-top: 1px solid #3a3f44;
     }
-}
-
-/* ======================================================== */
-/* --- 7. BOTÃO DE MARKETING (WHATSAPP) ---                 */
-/* ======================================================== */
-
-/* Ajusta a coluna da direita para empilhar a imagem e o botão */
-.map-section {
-    width: 55%;
-    padding: 30px;
-    display: flex;
-    flex-direction: column; /* Força o empilhamento vertical */
-    align-items: center;
-    justify-content: center;
-    gap: 30px; /* Cria um espaço entre a imagem e o botão */
-}
-
-/* Estilo do novo botão de marketing do WhatsApp */
-.cta-whatsapp-marketing {
-    display: inline-flex; /* Permite alinhar ícone e texto */
-    align-items: center;
-    justify-content: center;
-    padding: 15px 30px;
-    background-color: #25D366; /* Cor oficial do WhatsApp */
-    color: white;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    border: none;
-}
-
-.cta-whatsapp-marketing:hover {
-    background-color: #1DA851; /* Tom mais escuro para o hover */
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-}
-
-.cta-whatsapp-marketing i {
-    margin-right: 12px;
-    font-size: 1.4rem;
-}
-
-/* =============================================== */
-/* --- 8. AJUSTE FINO FINAL (ANTI-SCROLL) ---      */
-/* =============================================== */
-
-/* Reduz o espaçamento ENTRE os elementos do formulário */
-.form-group {
-    margin-bottom: 15px; 
-}
-
-/* Diminui a altura dos campos de texto */
-.form-group input {
-    padding: 12px 15px;
-}
-
-/* Diminui a altura dos botões para combinar com os inputs */
-#submit-button,
-#whatsapp-button {
-    padding: 12px 20px;
-}
-
-/* Reduz o espaço acima dos resultados */
-.form-section .info-header {
-    margin-top: 20px;
-    padding-top: 20px;
-}
-
-/* Deixa as caixas de resultado um pouco mais compactas */
-.info-box {
-    padding: 12px 15px;
-    margin-bottom: 10px;
-}
-
-/* Reduz um pouco o tamanho da fonte do valor final */
-.info-value {
-    font-size: 1.4rem;
 }
