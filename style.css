@@ -15,80 +15,160 @@
     --main-color: #ed1e22;
     --other-color: #c3cad5;
 
-    --h1-font: 5rem;
-    --h2-font: 2.9rem;
-    --p-font: 1.5rem;
+    /* Fontes base para o CELULAR */
+    --h1-font: 2.25rem; /* ~36px */
+    --h2-font: 1.75rem; /* ~28px */
+    --p-font: 1rem;     /* ~16px */
 }
 
 body, html{
     position: relative;
-    background-color: var(--bg-color); /* Fundo sólido para o resto do site */
+    background-color: var(--bg-color);
     width: 100%;
+    overflow-x: hidden;
 }
 
+/* --- HEADER (Mobile-First) --- */
 header{
-    position: fixed; /* Fixa o header no topo da tela */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000; /* Garante que ele fique na frente de tudo */
+    z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 4%; /* Usando porcentagem para ser mais responsivo */
-    background: transparent; /* <<-- AQUI! Fundo transparente por padrão */
-    transition: all .40s ease; /* Efeito suave na mudança de cor */
+    padding: 20px 5%; /* O header usa 5% de padding */
+    background: transparent;
+    transition: all .40s ease;
+    position: relative; 
 }
-
 header.window-scrolled {
-    background: var(--bg-color); /* Aplica a cor de fundo escura ao rolar */
+    background: var(--bg-color);
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
-span{
-    color: var(--main-color);
+.logo img {
+    height: 120px;
+    width: auto;
 }
 
-.top-btn{
-    padding: 11px 16px;
-    background: transparent;
-    border:  2px solid var(--main-color);
-    box-shadow: 0 0 20px var(--main-color);
-    cursor: pointer;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    transition: all .50s ease;
+/* --- ESTILOS DO MENU MOBILE (SANDUÍCHE) --- */
+.navlist {
+    display: none; 
+    position: absolute;
+    top: 160px; 
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-color);
+    border-top: 1px solid var(--main-color);
 }
-.top-btn:hover{
-    background: var(--main-color);
-    color: var(--bg-color);
+.navlist.active {
+    display: block;
 }
-
-.top-btn a{
-    color: var(--main-color);
+.navlist li {
+    list-style: none; 
 }
-
-.top-btn a:hover{
-    color: var(--bg-color);
+.navlist a {
+    display: block; 
+    padding: 1.25rem 20px;
+    text-align: center;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-bottom: 1px solid var(--second-bg-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.navlist li:last-child a {
+    border-bottom: none;
+}
+.navlist a:hover {
+    background-color: var(--main-color);
 }
 
 #menu-icon{
     color: white;
     font-size: 35px;    
     cursor: pointer;
-}
-
-.navlist{
-    display: none;
-}
-
-.navlist a{
     display: block;
-    padding: 10px;
+}
+
+.header-login-icon {
+    color: var(--text-color);
+    font-size: 30px;
+    display: block;
+    transition: all .40s ease;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.header-login-icon:hover {
+    color: var(--main-color);
+    transform: scale(1.1) translateX(-45%); 
+}
+
+
+span{
+    color: var(--main-color);
+}
+
+/* --- HERO (Mobile-First) --- */
+.hero {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background-image: url('img/ok-background-mobile.png'); 
+    background-size: cover;
+    background-position: center; 
+    background-repeat: no-repeat;
+}
+
+.hero-overlay-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Overlay total para mobile */
+    z-index: 1;
+}
+
+.hero .container-geral {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 0 5%; /* Hero usa 5% de padding */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
     text-align: center;
-    background-color: black;
-    color: var(--text-color);    
+}
+
+.main-content {
+    position: relative;
+    z-index: 2; 
+    color: var(--text-color);
+    width: 100%;
+    text-align: center;
+}
+
+.main-content h1 {
+    font-size: var(--h1-font);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+}
+
+.social {
+    margin-top: 2rem;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px; 
 }
 .social i{
     display: inline-flex;
@@ -100,154 +180,104 @@ span{
     border-radius: 50%;
     backdrop-filter: brightness(88%);
     font-size: 20px;
-    margin-right: 17px;
-    box-shadow: 0 0 20px transparent;
     cursor: pointer;
     transition: all .50s ease;
 }
-.social i:hover { /* Corrigido */
+.social i:hover { 
     transform: scale(1.1);
     box-shadow: 0 0 20px var(--main-color) ;
 }
 
-
-/* =============================================== */
-/* --- SEÇÃO HERO COM BACKGROUND ---               */
-/* =============================================== */
-
-.hero {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    
-    background-image: url('img/ok-background.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
-.container-geral {
-    position: relative;
-    z-index: 2; /* Garante que fique na frente do overlay do fundo */
-    width: 100%;
-    max-width: 1440px; /* <<-- A LARGURA MÁXIMA QUE VOCÊ QUERIA */
-    margin: 0 auto;    /* Centraliza o container na tela */
-    padding: 0 40px;   /* Um respiro nas laterais */
-    box-sizing: border-box;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-}
-/* Efeito de Overlay para melhorar a legibilidade */
-.hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Camada preta com 60% de opacidade */
-    z-index: 1;
+.hero-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--other-color);
+    font-weight: 400;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
-/* Conteúdo do Hero (para ficar na frente do overlay) */
-.main-content, .second-content {
-    position: relative;
-    z-index: 2; /* Garante que o conteúdo fique visível */
-}
-
-.main-content{
-    justify-content: center;
-    padding: 50px;
+.cta-btn {
+    display: inline-block;
+    padding: 14px 28px;
+    background-color: var(--main-color);
     color: var(--text-color);
+    border: 2px solid var(--main-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: all .50s ease;
 }
-.social{
-    margin-top: 40px;
+.cta-btn:hover {
+    background-color: transparent;
+    color: var(--main-color);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px var(--main-color);
 }
 
-.second-content{
-    margin: auto;
-}    
-.second-content img{
-    height: 300px;
+.hero-cta-btn { 
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    width: 90%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* =============================================== */
-/* --- DEMAIS SEÇÕES ---                           */
-/* =============================================== */
-
+section {
+    padding-top: 60px;
+    padding-bottom: 60px;
+    padding-left: 5%;
+    padding-right: 5%;
+}
 .about {
     background: var(--second-bg-color);
-    align-items: center;
-    gap: 1rem;
-    padding: 40px; /* Adicionado padding para respiro */
 }
 .about-img img{
     width: 90%;
-    margin: 20px auto;
+    margin: 0 auto 20px auto;
     display: block;
-    max-width: 530px;
+    max-width: 300px;
     border-radius: 50%;
     object-fit: cover;
     border: 7px solid var(--main-color);
     box-shadow: 0 0 20px var(--main-color);
 }
-
 .about-text h2{
-    padding: 20px;
     text-align: center;
     color: var(--text-color);
     font-size: var(--h2-font);
     line-height: 1.3;
-    margin-bottom:  20px;
+    margin-bottom: 20px;
 }
-
-.exp-area{
-    margin-bottom: 50px;
-    padding: 20px;
-}
-
 .exp-area p{
     text-align: justify;
     color: var(--text-color);
     font-weight: 600;
-    font-size: 19px;
-    line-height: 42px;
+    font-size: var(--p-font);
+    line-height: 1.7;
 }
 .exp-area p span{
     color: var(--other-color);
     font-weight: 400;
-    font-size: var(--p-font);
-    line-height: 42px;
 }
-
 .center-text{
     text-align: center;    
-    padding: 30px;
+    padding: 0;
+    margin-bottom: 30px;
 }
-
 .center-text h2{
     font-size: var(--h2-font);
 }
-
-.services-content{
+.services-content,
+.portfolio-content {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px,auto));
-    align-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2.3rem;
-    margin-top: 4.2rem;    
 }
-
 .box{
     text-align: center;
-    left: 50%;
-    margin: 10px;
-    padding: 80px 40px 66px;
+    padding: 40px 20px;
     background: #2d343f;
     border-radius: 28px;
     border: 1px solid transparent;
@@ -255,76 +285,51 @@ span{
     transition: all .50s ease;
     cursor: pointer;    
 }
-
 .ico{
-    font-size: var(--h1-font);
+    font-size: 3.5rem;
     color: var(--main-color);
 }
-
 .box h3{
-    font-size: 30px;
+    font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 10px;
-    color: var(--text-color); /* Adicionado cor para garantir contraste */
+    color: var(--text-color); 
 }
-
-.box ul { /* Adicionado para estilizar a lista */
+.box ul { 
     color: var(--other-color);
     text-align: left;
     display: inline-block;
+    font-size: var(--p-font);
 }
-
 .box:hover{
     border: 1px solid var(--main-color);
     transform: translateY(-5px) scale(1.03);
 }
-
 .portfolio{
     background: var(--second-bg-color);
 }
-
-.portfolio-content{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px,auto));
-    align-items: center;
-    gap: 2.3rem;
-    margin-top: 4.2rem;
-}
-
 .row img{
     height: auto;
     width: 100%;
     border-radius: 28px;
     margin-bottom: 1.4rem;
 }
-
 .row{
     background: #2d343f;
     border-radius: 28px;
-    border: 1px solid var(--main-color); /* Corrigido de "5px" */
+    border: 1px solid var(--main-color);
     box-shadow: 0 0 5px var(--main-color);
     padding: 20px;
     transition: all .50s ease;
 }
-
 .row:hover{
     transform: translateY(-5px) scale(1.03);
     cursor: pointer;
 }
-
-.contact-form{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 4.2rem;    
-}
-
 .contact-form form{
     position: relative;
     width: 100%;
-    max-width: 600px; /* Adicionado max-width para responsividade */
 }
-
 form input, form textarea{
     width: 100%;
     padding: 20px;
@@ -336,12 +341,10 @@ form input, form textarea{
     margin-bottom: 20px;
     border-radius: 8px;    
 }
-
 form input::placeholder, form textarea::placeholder{
     color: var(--other-color);
     font-size: 15px;
 }
-
 form .send-btn{
     padding: 11px 26px;
     background: var(--main-color);
@@ -351,32 +354,27 @@ form .send-btn{
     font-size: 15px;
     font-weight: 600;
     transition: all .50s ease;
-    width: 30%;
+    width: 100%;
 }
-
-
 form .send-btn:hover{
     background: transparent;
     color: var(--main-color);
     box-shadow: 0 0 20px var(--main-color);
     cursor: pointer;
 }
-
 .footer{
-    padding: 22px 16%;
+    padding: 22px 5%;
     background: var(--second-bg-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
 }
-
 .copyright p{
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 400;
     color: var(--other-color);    
 }
-
 .scroll-top i{
     display: inline-flex;
     align-items: center;
@@ -388,42 +386,28 @@ form .send-btn:hover{
     color: var(--text-color);
     font-size: 27px;
 }
-
-
-
-/* =============================================== */
-/* --- BOTÃO FLUTUANTE DO WHATSAPP (COM ANIMAÇÃO) -- */
-/* =============================================== */
-
 .whatsapp {
     position: fixed;
     width: 60px;
     height: 60px;
-    bottom: 40px;
-    right: 40px;
-    background-color: #25D366; /* Cor oficial do WhatsApp */
+    bottom: 20px;
+    right: 20px;
+    background-color: #25D366; 
     color: #fff;
     border-radius: 50px;
     text-align: center;
     font-size: 30px;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
     z-index: 1000;
-    
-    /* Centraliza o ícone perfeitamente */
     display: flex;
     align-items: center;
     justify-content: center;
-
     transition: all 0.3s ease;
 }
-
-/* Efeito ao passar o mouse */
 .whatsapp:hover {
     transform: scale(1.1);
-    background-color: #1DA851; /* Tom mais escuro no hover */
+    background-color: #1DA851; 
 }
-
-/* O "eco" ou "outline" que vai pulsar */
 .whatsapp:after {
     content: '';
     width: 100%;
@@ -431,121 +415,141 @@ form .send-btn:hover{
     position: absolute;
     top: 0;
     left: 0;
-    z-index: -1; /* Fica atrás do botão principal */
+    z-index: -1; 
     background-color: #25D366;
     border-radius: 50%;
-    
-    /* A mágica da animação */
     animation: pulse 2s infinite;
 }
-
-/* A definição da animação "pulse" */
 @keyframes pulse {
     0% {
         transform: scale(1);
         opacity: 0.7;
     }
     100% {
-        transform: scale(1.8); /* O tamanho final do "eco" */
-        opacity: 0; /* Desaparece suavemente */
+        transform: scale(1.8); 
+        opacity: 0; 
     }
 }
-.cta-btn {
-    display: inline-block;
-    margin-top: 25px;
-    padding: 15px 30px;
-    background-color: var(--main-color);
-    color: var(--text-color);
-    border: 2px solid var(--main-color);
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 700;
-    transition: all .50s ease;
-}
 
-.cta-btn:hover {
-    background-color: transparent;
-    color: var(--main-color);
-    transform: scale(1.05);
-    box-shadow: 0 0 15px var(--main-color);
-}
-
+/* ======================================================
+  NOVO: APRIMORAMENTOS PARA TELAS MAIORES (Desktop)
+  ======================================================
+*/
 @media (min-width: 768px) {
-    /* --- Regras que você já tinha e estão corretas --- */
-    .services-content {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+    
+    /* --- Aprimoramentos do Hero --- */
+    :root {
+        --h1-font: 3rem; /* Aumenta a fonte do título */
     }
-    .about {
-        display: grid;
-        grid-template-columns: repeat(2,1fr);
-        gap: 1rem;
+
+    .hero {
+        /* Troca a imagem de fundo para a versão desktop */
+        background-image: url('img/ok-background.png');
     }
-    .second-content img{
-        height: 500px;
+
+    .hero-overlay-left {
+        width: 50%; /* Overlay fica só na esquerda */
+        background: linear-gradient(to right, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0));
+    }
+
+    .hero .container-geral {
+        justify-content: flex-start; /* Alinha tudo à esquerda */
+        text-align: left;
+    }
+
+    .main-content {
+        width: 45%; /* Define a largura do bloco de texto */
+        text-align: left;
     }
     
-    /* ======================================= */
-    /* --- REGRAS DO MENU PARA DESKTOP ---     */
-    /* ======================================= */
-
-    /* Esconde o ícone do menu hamburger */
-    #menu-icon {
-        display: none;
+    .social {
+        justify-content: flex-start; /* Alinha ícones à esquerda */
     }
 
-    /* Regra .navlist ATUALIZADA para centralização perfeita e efeito hover */
+    .hero-description {
+        margin: 0; /* Alinha descrição à esquerda */
+    }
+
+    .hero-cta-btn {
+        margin-left: 0; /* Alinha botão à esquerda */
+        margin-right: 0;
+        width: 90%; /* Mantém largo, mas limitado pelo max-width */
+    }
+
+    /* --- Aprimoramentos do Menu Desktop --- */
+    #menu-icon, .header-login-icon {
+        display: none; /* Esconde o menu hamburguer E o login de ícone */
+    }
+
     .navlist {
         display: flex;
         align-items: center;
         gap: 2.5rem;
+        position: static; 
+        transform: none;
+        margin-left: auto; /* Menu de links fica na direita */
         
-        /* Centraliza a lista no meio do header */
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
+        /* Reseta estilos do menu mobile */
+        border-top: none;
+        width: auto;
+        top: auto;
+        background-color: transparent;
+    }
+    
+    .navlist li {
+        border: none;
     }
 
-    /* Estilo dos links no desktop - ESTADO PADRÃO */
     .navlist a {
         background: transparent;
         font-weight: 600;
         font-size: 1rem;
         color: var(--text-color);
-        
-        /* Prepara o espaço para o hover para evitar "pulos" no layout */
         padding: 11px 16px;
         border: 2px solid transparent;
         border-radius: 8px;
-        
         transition: all 0.4s ease;
     }
 
-    /* Efeito ao passar o mouse nos links do desktop - ESTADO HOVER */
     .navlist a:hover {
         color: var(--main-color);
         border: 2px solid var(--main-color);
         box-shadow: 0 0 20px var(--main-color);
     }
+    
+    /* Recria o botão de login, mas agora como um link no menu */
+    .navlist li.login-item a {
+        color: var(--main-color);
+        border: 2px solid var(--main-color);
+        box-shadow: 0 0 20px var(--main-color);
+    }
+    .navlist li.login-item a:hover {
+        background-color: var(--main-color);
+        color: var(--text-color);
+    }
+
+
+    /* --- Aprimoramentos do Layout --- */
+    
+    .about .container {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 2rem;
+        align-items: center;
+    }
+    
+    .services-content {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
-/* Para telas de notebook e tablet */
-@media (min-width: 768px) and (max-width: 1180px) {
-    .hero .container-geral {
-        flex-direction: column; /* Empilha o conteúdo */
-        justify-content: center;
-        align-items: center; /* Centraliza horizontalmente */
-        text-align: center;
-        padding-top: 80px; /* Garante que o texto não suba */
+/* --- Telas de Notebook (e maiores) --- */
+@media (min-width: 1024px) {
+    :root {
+        --h1-font: 3.5rem; /* Aumenta mais um pouco */
     }
-
-    .hero .second-content img {
-        height: 400px; /* Diminui a imagem para 400px */
-        margin-top: 2rem; /* Adiciona um espaço superior à imagem */
-        max-width: 90%; /* Garante que ela não transborde */
-    }
-
-    .hero .main-content {
-        text-align: center;
+    
+    .services-content {
+        grid-template-columns: repeat(4, 1fr);
     }
 }
