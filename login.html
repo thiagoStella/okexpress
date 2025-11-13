@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página em Construção - OK Express</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        /* Estilos específicos para esta página */
+        body {
+            background-color: #1b1f24; /* Sua cor de fundo principal */
+            display: flex; /* Habilita flexbox para centralização */
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center; /* Centraliza verticalmente */
+            min-height: 100vh; /* Garante que o body ocupe toda a altura da tela */
+            margin: 0; /* Remove margens padrão */
+            overflow: hidden; /* Evita barras de rolagem desnecessárias */
+        }
+
+        .construction-container {
+            text-align: center; /* Centraliza a imagem e texto dentro do container */
+            padding: 20px;
+            max-width: 90%; /* Limita a largura para dispositivos menores */
+            box-sizing: border-box; /* Inclui padding na largura total */
+        }
+
+        .construction-container img {
+            max-width: 100%; /* Garante que a imagem não transborde */
+            height: auto; /* Mantém a proporção da imagem */
+            display: block; /* Remove espaço extra abaixo da imagem */
+            margin: 0 auto 20px auto; /* Centraliza a imagem e adiciona margem inferior */
+            border-radius: 8px; /* Opcional: bordas arredondadas para a imagem */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Opcional: sombra na imagem */
+        }
+
+        .construction-container h1 {
+            color: #fff; /* Cor do seu texto principal */
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .construction-container p {
+            color: #c3cad5; /* Cor do seu texto secundário */
+            font-size: 1.2rem;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background-color: #ed1e22; /* Sua cor principal */
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #c91b1f; /* Um pouco mais escuro ao passar o mouse */
+            transform: translateY(-2px);
+        }
+
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            .construction-container h1 {
+                font-size: 1.8rem;
+            }
+            .construction-container p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="construction-container">
+        <img src="img/em-construcao.png" alt="Página em construção">
+        <h1>Em Breve!</h1>
+        <p>Estamos trabalhando para trazer uma experiência incrível para você.</p>
+        <a href="index.html" class="back-button">Voltar para Home</a>
+    </div>
+</body>
+</html>
