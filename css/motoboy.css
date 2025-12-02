@@ -1,0 +1,159 @@
+/* ======================================================
+   ARQUIVO: css/motoboy.css
+   Estilo para o Painel do Motoboy (RF-MOTOBOY)
+   ====================================================== */
+
+/* 1. PALETA DE CORES (Copiada do seu projeto) */
+:root {
+    --text-color: #fff;
+    --bg-color: #1b1f24;
+    --second-bg-color: #22282f;
+    --main-color: #ed1e22;      /* Vermelho */
+    --other-color: #c3cad5;
+    --green-color: #25D366;     /* Verde (Finalizar) */
+    --yellow-color: #f0ad4e;    /* Amarelo (Devolver) */
+}
+
+/* 2. RESET BÁSICO E FUNDO */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* 3. CABEÇALHO DA DEMO */
+.demo-header {
+    background-color: var(--second-bg-color);
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--main-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.demo-header h1 {
+    font-size: 1.5rem;
+    color: var(--main-color);
+}
+.demo-header h2 {
+    font-size: 1.2rem;
+    color: var(--other-color);
+}
+
+/* 4. CONTÊINER PRINCIPAL */
+.container-motoboy {
+    padding: 1rem 5%;
+}
+
+.pedidos-container h3 {
+    font-size: 1.3rem;
+    color: var(--other-color);
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--second-bg-color);
+    padding-bottom: 0.5rem;
+}
+
+.pedidos-lista {
+    display: grid;
+    /* Colunas responsivas */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+/* 5. CARD DE PEDIDO (RF-M2) */
+.card-pedido {
+    background-color: var(--second-bg-color);
+    border-radius: 8px;
+    border: 1px solid #444;
+    overflow: hidden; /* Para os botões se alinharem */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.card-info {
+    padding: 1.25rem;
+}
+.card-info h4 {
+    font-size: 1.2rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+.card-info p {
+    font-size: 1rem;
+    color: var(--other-color);
+    margin-top: 0.25rem;
+}
+
+/* 6. BOTÕES DO CARD (RF-M3, M4, M5, M6) */
+.card-botoes {
+    display: grid;
+    grid-template-columns: 1fr; /* Padrão (Coletar) */
+    gap: 0;
+}
+
+.btn-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: none;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.btn-card i {
+    font-size: 1.1rem;
+}
+
+/* Botão de Coletar (Vermelho) */
+.btn-coletar {
+    background-color: var(--main-color);
+    color: var(--text-color);
+}
+.btn-coletar:hover {
+    background-color: #ff3337;
+}
+
+/* Quando coletado, os botões se dividem */
+.btn-devolver, .btn-finalizar {
+    /* Hack: Isso faz com que o seletor mude */
+    grid-template-columns: 1fr 1fr;
+}
+
+/* Botão Devolver (Amarelo/Laranja) */
+.btn-devolver {
+    background-color: var(--yellow-color);
+    color: var(--bg-color);
+    border-top: 2px solid var(--bg-color);
+}
+.btn-devolver:hover {
+    background-color: #ffc266;
+}
+
+/* Botão Finalizar (Verde) */
+.btn-finalizar {
+    background-color: var(--green-color);
+    color: var(--bg-color);
+    border-top: 2px solid var(--bg-color);
+}
+.btn-finalizar:hover {
+    background-color: #3aff7c;
+}
+
+.btn-card:disabled {
+    background-color: #555;
+    color: #888;
+    cursor: not-allowed;
+}

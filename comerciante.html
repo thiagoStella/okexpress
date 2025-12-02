@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Lojista - Protótipo v2.0</title>
+    <link rel="stylesheet" href="css/atendente.css">
+    <link rel="stylesheet" href="css/comerciante.css">
+</head>
+<body>
+
+    <header class="demo-header">
+        <h1>Dashboard Lojista</h1>
+        <h2>Pizzaria do Zé (Simulado)</h2>
+    </header>
+
+    <main class="container-lojista">
+        
+        <section class="card-financeiro">
+            <h3>Total a Repassar (Ciclo Atual)</h3>
+            <p id="total-a-pagar">R$ 0,00</p>
+            <small>Este valor é a soma de todos os fretes com status "PENDENTE".</small>
+        </section>
+        
+        <section class="log-operacional">
+            <h3>Log de Entregas (Pendentes de Pagamento)</h3>
+            
+            <div class="filtros">
+                <strong>Filtros (Demo):</strong>
+                <button class="btn-filtro active">Semana Inteira</button>
+                <button class="btn-filtro">Por Dia</button>
+                <button class="btn-filtro">Por Motoboy</button>
+            </div>
+
+            <div class="tabela-container">
+                <table id="tabela-pedidos">
+                    <thead>
+                        <tr>
+                            <th>Dia</th>
+                            <th>Nº Pedido</th>
+                            <th>Motoboy</th>
+                            <th>Destino</th>
+                            <th>Valor Frete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-corpo">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/comerciante.js?v=200"></script>
+</body>
+</html>

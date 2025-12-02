@@ -42,7 +42,7 @@ body, html{
 
 /* --- HEADER (Mobile-First) --- */
 header{
-    position: fixed;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
@@ -50,18 +50,19 @@ header{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 5%; /* O header usa 5% de padding */
+    padding: 5px 5%; /* O header usa 5% de padding */
     background: transparent;
     transition: all .40s ease;
     position: relative; 
 }
 header.window-scrolled {
+    position: fixed;
     background: var(--bg-color);
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
 .logo img {
-    height: 120px;
+    height: 80px;
     width: auto;
 }
 
@@ -139,7 +140,7 @@ span{
       MUDANÇA AQUI: Carrega a imagem MOBILE por padrão
       ======================================================
     */
-    background-image: url('img/ok-background-mobile.png'); 
+    background-image: url('../img/ok-background-mobile.png'); 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -483,12 +484,13 @@ form .send-btn:hover{
 */
 @media (min-width: 768px) {
     
+    
     :root {
-        --h1-font: 3rem; 
+        --h1-font: 1rem; 
     }
     
     .hero {        
-        background-image: url('img/ok-background.png');
+        background-image: url('../img/ok-background.png');
         background-size: cover;
         background-color: var(--bg-color); 
     }
@@ -582,7 +584,7 @@ form .send-btn:hover{
 
 @media (min-width: 1024px) {
     :root {
-        --h1-font: 3.5rem; 
+        --h1-font: 2.5rem; 
     }
     
     .services-content {

@@ -1,0 +1,107 @@
+/* ======================================================
+   ARQUIVO: css/comerciante.css
+   Estilo para o Dashboard do Lojista (RF-D1)
+   ====================================================== */
+
+/* (Importamos o atendente.css, então :root e body já estão ok) */
+
+.container-lojista {
+    padding: 1rem 5%;
+}
+
+/* Card de Destaque Financeiro */
+.card-financeiro {
+    background-color: var(--second-bg-color);
+    border-left: 6px solid var(--main-color);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.card-financeiro h3 {
+    font-size: 1.2rem;
+    color: var(--other-color);
+    margin-bottom: 0.5rem;
+}
+
+.card-financeiro p {
+    font-size: 3rem; /* Destaque no valor */
+    font-weight: 700;
+    color: var(--text-color);
+    line-height: 1.1;
+}
+
+.card-financeiro small {
+    color: var(--other-color);
+    opacity: 0.7;
+}
+
+/* Log Operacional */
+.log-operacional h3 {
+    font-size: 1.5rem;
+    color: var(--other-color);
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--second-bg-color);
+    padding-bottom: 0.5rem;
+}
+
+.filtros {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-filtro {
+    padding: 0.5rem 1rem;
+    background-color: var(--second-bg-color);
+    color: var(--other-color);
+    border: 1px solid var(--second-bg-color);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.btn-filtro:hover {
+    border-color: var(--main-color);
+    color: var(--main-color);
+}
+.btn-filtro.active {
+    background-color: var(--main-color);
+    color: var(--text-color);
+    border-color: var(--main-color);
+}
+
+/* Tabela de Pedidos */
+.tabela-container {
+    overflow-x: auto; /* Permite rolar a tabela em telas pequenas */
+}
+
+#tabela-pedidos {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--second-bg-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#tabela-pedidos th,
+#tabela-pedidos td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--bg-color);
+}
+
+#tabela-pedidos th {
+    background-color: #333;
+    color: var(--text-color);
+}
+
+#tabela-pedidos td {
+    color: var(--other-color);
+}
+
+#tabela-pedidos tbody tr:hover {
+    background-color: #3a4049;
+}

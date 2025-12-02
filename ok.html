@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin OK Express - Protótipo v2.0</title>
+    <link rel="stylesheet" href="css/atendente.css">
+    <link rel="stylesheet" href="css/ok.css">
+</head>
+<body>
+
+    <header class="demo-header">
+        <h1>Painel de Admin (OK Express)</h1>
+        <h2>Admin Logado</h2>
+    </header>
+
+    <main class="container-lojista">
+        
+        <section class="lista-estabelecimentos">
+            <h3>Estabelecimentos</h3>
+            <div class="lista-estabelecimentos-row active">
+                <h4>Pizzaria do Zé</h4>
+                <small>ID: LOJISTA#PIZZARIADOZE</small>
+                
+                <button id="btn-fechar-ciclo" class="btn-perigo">
+                    FECHAR CICLO SEMANAL
+                </button>
+            </div>
+            
+            <div class="lista-estabelecimentos-row">
+                <h4>Hamburgueria do Bairro (Em breve)</h4>
+                <small>ID: LOJISTA#HAMBURGUERIA</small>
+                <button class="btn" disabled>Fechar Ciclo</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/ok.js"></script>
+</body>
+</html>

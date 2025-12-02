@@ -3,7 +3,8 @@
 // --- PASSO 1: COLE A URL DA SUA API AQUI ---
 // Substitua a string abaixo pela URL de Invocação que você copiou do API Gateway.
 // Garanta que o caminho /calcular esteja no final!
-const API_URL = "https://ydebkj5xa0.execute-api.sa-east-1.amazonaws.com/v1/calcular";
+const API_URL = "https://16layzd1jd.execute-api.sa-east-1.amazonaws.com/calcular";
+
 
 // --- Mapeamento dos elementos do HTML ---
 const calcForm = document.getElementById('calc-form');

@@ -1,0 +1,37 @@
+/* ======================================================
+   ARQUIVO: css/ok.css
+   Estilo para o Dashboard do Admin (RF-D2)
+   ====================================================== */
+
+   .lista-estabelecimentos-row {
+    background-color: var(--second-bg-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--second-bg-color);
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.lista-estabelecimentos-row.active {
+    border-color: var(--main-color);
+}
+
+.lista-estabelecimentos-row h4 {
+    font-size: 1.3rem;
+    color: var(--text-color);
+    flex-basis: 300px;
+    flex-grow: 1;
+}
+.lista-estabelecimentos-row small {
+    color: var(--other-color);
+    flex-grow: 1;
+}
+
+.lista-estabelecimentos-row .btn-perigo {
+    width: auto; /* Botão não ocupa 100% */
+}

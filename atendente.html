@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Atendente - Protótipo v2.0</title>
+    <link rel="stylesheet" href="css/atendente.css">
+</head>
+<body>
+
+    <header class="demo-header">
+        <h1>Painel do Atendente</h1>
+        <div class="controle-tempo">
+            <h2 id="display-dia">Carregando dia...</h2>
+            <button id="btn-fechar-loja" class="btn-perigo">FECHAR LOJA</button>
+        </div>
+    </header>
+
+    <main class="container-atendente">
+        
+        <section class="form-cadastro" id="form-section">
+            <h3><i class="fas fa-plus-circle"></i> Fabricar Novo Pedido</h3>
+            <form id="form-pedido">
+                <div class="input-group">
+                    <label for="origem">Origem</label>
+                    <input type="text" id="origem" value="Rua João Esmanhoto, 246" disabled>
+                </div>
+                
+                <div class="input-group-row">
+                    <div class="input-group">
+                        <label for="numeroPedido">Nº Pedido</label>
+                        <input type="text" id="numeroPedido" placeholder="#1001" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="nomeCliente">Nome do Cliente</label>
+                        <input type="text" id="nomeCliente" placeholder="Thiago Stella" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="enderecoDestino">Endereço de Destino</label>
+                    <input type="text" id="enderecoDestino" placeholder="Rua Martin Afonso, 2750" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="bairro">Bairro</label>
+                    <input type="text" id="bairro" placeholder="Bigorrilho" required>
+                </div>
+
+                <button type="submit" class="btn" id="btn-salvar-pedido">Salvar Pedido</button>
+            </form>
+        </section>
+
+        <section class="kanban-container" id="kanban-section">
+            <div class="kanban-coluna">
+                <h3>1. Em Preparo</h3>
+                <div class="kanban-cards" id="coluna-preparo">
+                    </div>
+            </div>
+            <div class="kanban-coluna">
+                <h3>2. Aguardando Entrega</h3>
+                <div class="kanban-cards" id="coluna-aguardando">
+                    </div>
+            </div>
+            <div class="kanban-coluna">
+                <h3>3. A Caminho</h3>
+                <div class="kanban-cards" id="coluna-caminho">
+                    </div>
+            </div>
+            <div class="kanban-coluna">
+                <h3>4. Entregue</h3>
+                <div class="kanban-cards" id="coluna-entregue">
+                    </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/atendente.js?v=200"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+</body>
+</html>
