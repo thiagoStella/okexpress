@@ -21,8 +21,15 @@ calcForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     // Pega os valores digitados nos campos de endereço
-    const originAddress = originInput.value;
-    const destinationAddress = destinationInput.value;
+    const originAddress = originInput.value.trim();
+    const destinationAddress = destinationInput.value.trim();
+
+    // --- VALIDAÇÃO (Input Hygiene) ---
+    // Impede chamadas desnecessárias à API se os campos estiverem vazios
+    if (!originAddress || !destinationAddress) {
+        resultDiv.innerHTML = '<p style="color: #ed1e22;">Por favor, preencha a origem e o destino.</p>';
+        return; // Para a execução aqui! Não chama o Lambda.
+    }
 
     // Feedback visual para o usuário
     resultDiv.innerHTML = '<p>Calculando...</p>';

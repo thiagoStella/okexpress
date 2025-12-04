@@ -48,12 +48,20 @@ document.addEventListener("DOMContentLoaded", () => {
         btnSalvar.innerText = "Calculando rota e salvando...";
 
         const dadosDoForm = {
-            numeroPedido: document.getElementById('numeroPedido').value,
-            nomeCliente: document.getElementById('nomeCliente').value,
-            enderecoDestino: document.getElementById('enderecoDestino').value,
+            numeroPedido: document.getElementById('numeroPedido').value.trim(),
+            nomeCliente: document.getElementById('nomeCliente').value.trim(),
+            enderecoDestino: document.getElementById('enderecoDestino').value.trim(),
             bairro: document.getElementById('bairro').value,
             diaSimulado: diaDaDemo
         };
+
+        // --- VALIDAÇÃO (Input Hygiene) ---
+        if (!dadosDoForm.numeroPedido || !dadosDoForm.nomeCliente || !dadosDoForm.enderecoDestino) {
+            alert("Por favor, preencha todos os campos obrigatórios (Pedido, Cliente, Endereço).");
+            btnSalvar.disabled = false;
+            btnSalvar.innerText = "Salvar Pedido";
+            return;
+        }
 
         try {
             const response = await fetch(`${API_URL}/pedido`, {
