@@ -19,81 +19,93 @@ document.addEventListener("DOMContentLoaded", () => {
     const MOTOBY_ID_LOGADO = "thiago"; // Mude para "levy" para simular o outro
     motoboyIdDisplay.innerText = `Motoboy: ${MOTOBY_ID_LOGADO}`;
 
-
-    // ======================================================
-    // LÓGICA DE CARREGAMENTO (RF-M1)
-    // ======================================================
-
     /**
-     * RF-M1: Busca os pedidos "AGUARDANDO_ENTREGA" na API
+     * RF-M1: Busca os pedidos disponíveis para o motoboy
      */
     async function carregarPedidos() {
-        console.log("Buscando pedidos para o motoboy...");
-        listaPedidos.innerHTML = "Carregando pedidos..."; // Feedback
+        console.log("Buscando pedidos para motoboys...");
+        listaPedidos.innerHTML = '<p>Carregando...</p>';
 
         try {
-            // Chama a API que usa o GSI-1 (DeliveryStatusIndex)
             const response = await fetch(`${API_URL}/pedidos/motoboy`);
+
             if (!response.ok) {
                 throw new Error("Falha ao buscar pedidos.");
             }
 
-            const pedidosProntos = await response.json();
+            const pedidos = await response.json();
+            listaPedidos.innerHTML = ""; // Limpa
 
-            // Limpa a lista
-            listaPedidos.innerHTML = "";
-
-            if (pedidosProntos.length === 0) {
-                listaPedidos.innerText = "Nenhum pedido aguardando coleta.";
+            if (pedidos.length === 0) {
+                listaPedidos.innerHTML = '<p>Nenhum pedido aguardando entrega no momento.</p>';
                 return;
             }
 
-            // RF-M2: Renderiza cada card
-            for (const pedido of pedidosProntos) {
-                renderizarCard(pedido);
-            }
+            pedidos.forEach(pedido => {
+                renderizarCardMotoboy(pedido);
+            });
 
         } catch (error) {
             console.error(error);
-            listaPedidos.innerText = "Erro ao carregar pedidos.";
+            listaPedidos.innerHTML = `<p style="color:red">Erro: ${error.message}</p>`;
         }
     }
 
     /**
-     * RF-M2: Cria o HTML de um card
+     * Renderiza um card de pedido na lista
      */
-    function renderizarCard(pedido) {
-        const cardElement = document.createElement('div');
-        cardElement.className = 'card-pedido';
-        cardElement.id = pedido.SK; // Damos um ID para o elemento
+    function renderizarCardMotoboy(pedido) {
+        const card = document.createElement('div');
+        card.className = 'card-pedido';
+        card.id = pedido.SK;
 
-        // Monta o HTML interno
-        cardElement.innerHTML = `
-            <div class="card-info">
-                <h4>${pedido.pedidoId} (${pedido.nomeCliente})</h4>
-                <p>${pedido.enderecoDestino}, ${pedido.bairro}</p>
-                <p>Frete: R$ ${pedido.valorFrete.toFixed(2)}</p>
-            </div>
-            <div class="card-botoes" id="botoes-${pedido.SK}">
+        let botoesHTML = '';
+
+        // Se o pedido está AGUARDANDO, qualquer um pode pegar
+        if (pedido.deliveryStatus === 'AGUARDANDO_ENTREGA') {
+            botoesHTML = `
                 <button class="btn-card btn-coletar">
                     <i class="fas fa-hand-paper"></i> COLETAR
                 </button>
+             `;
+        }
+        // Se está A_CAMINHO, só quem pegou vê os botões de ação
+        else if (pedido.deliveryStatus === 'A_CAMINHO' && pedido.motoboyId === MOTOBY_ID_LOGADO) {
+            botoesHTML = `
+                <button class="btn-card btn-devolver">
+                    <i class="fas fa-undo-alt"></i> DEVOLVER
+                </button>
+                <button class="btn-card btn-finalizar">
+                    <i class="fas fa-check-circle"></i> FINALIZAR
+                </button>
+             `;
+        } else {
+            // Se está a caminho com OUTRO motoboy, ou entregue, não mostra nada (ou nem deveria vir da API)
+            return;
+        }
+
+        card.innerHTML = `
+            <h4>Pedido #${pedido.pedidoId}</h4>
+            <p><strong>Cliente:</strong> ${pedido.nomeCliente}</p>
+            <p><strong>Endereço:</strong> ${pedido.enderecoDestino}, ${pedido.bairro}</p>
+            <p><strong>Frete:</strong> R$ ${pedido.valorFrete.toFixed(2)}</p>
+            <div id="botoes-${pedido.SK}" class="botoes-card">
+                ${botoesHTML}
             </div>
         `;
 
-        // Adiciona o card à lista na tela
-        listaPedidos.appendChild(cardElement);
+        listaPedidos.appendChild(card);
 
-        // Adiciona o "escutador" de clique (RF-M4)
-        const btnColetar = cardElement.querySelector('.btn-coletar');
-        btnColetar.onclick = () => {
-            handleColetar(pedido.SK);
-        };
+        // Adiciona listeners aos botões recém-criados
+        const btnColetar = card.querySelector('.btn-coletar');
+        if (btnColetar) btnColetar.onclick = () => handleColetar(pedido.SK);
+
+        const btnDevolver = card.querySelector('.btn-devolver');
+        if (btnDevolver) btnDevolver.onclick = () => handleDevolver(pedido.SK);
+
+        const btnFinalizar = card.querySelector('.btn-finalizar');
+        if (btnFinalizar) btnFinalizar.onclick = () => handleFinalizar(pedido.SK);
     }
-
-    // ======================================================
-    // LÓGICA DE AÇÕES DO MOTOBOY (RF-M4, M5, M6)
-    // ======================================================
 
     /**
      * RF-M4: Lógica do botão [COLETAR]
