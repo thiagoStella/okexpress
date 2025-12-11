@@ -4,7 +4,7 @@ import { Input } from '../ui/Input';
 import { clsx } from 'clsx';
 
 export function AddressAutocomplete({ value, onChange, label, placeholder, error }) {
-    const { results, search } = useAddressSearch();
+    const { suggestions, setQuery } = useAddressSearch();
     const [isOpen, setIsOpen] = useState(false);
     const wrapperRef = useRef(null);
 
@@ -21,7 +21,7 @@ export function AddressAutocomplete({ value, onChange, label, placeholder, error
     const handleInputChange = (e) => {
         const newValue = e.target.value;
         onChange(newValue);
-        search(newValue);
+        setQuery(newValue);
         setIsOpen(true);
     };
 
@@ -41,9 +41,9 @@ export function AddressAutocomplete({ value, onChange, label, placeholder, error
                 autoComplete="off"
             />
 
-            {isOpen && results.length > 0 && (
+            {isOpen && suggestions.length > 0 && (
                 <ul className="absolute z-10 w-full mt-1 bg-brand-secondary border border-gray-700 rounded-md shadow-lg max-h-60 overflow-auto">
-                    {results.map((address, index) => (
+                    {suggestions.map((address, index) => (
                         <li
                             key={index}
                             className="px-4 py-2 hover:bg-gray-700 cursor-pointer text-text-primary"

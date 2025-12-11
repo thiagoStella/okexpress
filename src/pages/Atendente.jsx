@@ -6,34 +6,175 @@ import { Card } from '../components/ui/Card';
 import { AddressAutocomplete } from '../components/domain/AddressAutocomplete';
 import { KanbanBoard } from '../components/domain/KanbanBoard';
 import { LogOut, CheckCircle, X } from 'lucide-react';
+import ReturnList from '../components/logistics/ReturnList';
+import TrackingModal from '../components/logistics/TrackingModal';
 
 import { useOrders } from '../contexts/OrderContext';
 
+import { timeService } from '../services/timeService';
+
 export default function Atendente() {
     const { user, logout } = useAuth();
-    const { orders, addOrder, updateOrderStatus } = useOrders();
+    const { orders, addOrder, updateOrderStatus, updateOrderLocal } = useOrders();
     const [address, setAddress] = useState('');
+    const [number, setNumber] = useState('');
     const [description, setDescription] = useState('');
     const [showCompleted, setShowCompleted] = useState(false);
 
+    // Logistics State
+    const [selectedDriver, setSelectedDriver] = useState(null);
+    const tenantStoreLocation = { lat: -25.4135, long: -49.3471 }; // São Braz
+
+    // Mock Drivers (Lifted from LogisticsTest for demo)
+    const [drivers, setDrivers] = useState([
+        {
+            driverId: '101',
+            name: 'João Motoboy',
+            current_lat: -25.4040, current_long: -49.3390,
+            last_update: Date.now(),
+            active_order_id: null,
+            active_order_destination: null
+        },
+        {
+            driverId: '102',
+            name: 'Maria Entregas',
+            current_lat: -25.4140, current_long: -49.3080,
+            last_update: Date.now(),
+            active_order_id: 'ORD-555',
+            active_order_destination: { lat: -25.4143, long: -49.3088 }
+        },
+        {
+            driverId: '103',
+            name: 'Pedro Rápido',
+            current_lat: -25.4250, current_long: -49.2700,
+            last_update: Date.now(),
+            active_order_id: null,
+            active_order_destination: null
+        }
+    ]);
+
+    const handleTrackOrder = async (order) => {
+        console.log("Tracking order:", order);
+
+        // 1. Try to find a real driver assigned to this order
+        let driver = drivers.find(d => d.active_order_id === `ORD-${order.id}`);
+
+        // 2. If no driver found (e.g. Test Button used), create a "Ghost Driver" for the demo
+        if (!driver) {
+            console.log("No driver found, creating ghost driver for demo.");
+            driver = {
+                driverId: 'ghost-1',
+                name: 'Entregador Teste',
+                current_lat: tenantStoreLocation.lat, // Start at store
+                current_long: tenantStoreLocation.long,
+                last_update: Date.now(),
+                active_order_id: order.id,
+                active_order_destination: null // Will be filled below
+            };
+        }
+
+        // 3. Ensure we have a destination (Geocode if missing)
+        if (!driver.active_order_destination && order.address) {
+            // Default destination (Store)
+            let destination = { ...tenantStoreLocation };
+
+            try {
+                // Clean address for search
+                const query = `${order.address}, Curitiba, Paraná, Brazil`;
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+
+                if (data && data.length > 0) {
+                    destination = {
+                        lat: parseFloat(data[0].lat),
+                        long: parseFloat(data[0].lon)
+                    };
+                    console.log("Geocoded destination:", destination);
+                } else {
+                    console.warn("Geocoding failed, using default store location.");
+                }
+            } catch (error) {
+                console.error("Error geocoding address:", error);
+            }
+
+            // Update the local driver object (and state if it's a real driver)
+            driver = { ...driver, active_order_destination: destination };
+
+            // If it's a real driver in our list, update the state too so we don't re-geocode every time
+            if (drivers.some(d => d.driverId === driver.driverId)) {
+                setDrivers(prev => prev.map(d => d.driverId === driver.driverId ? { ...d, active_order_destination: destination } : d));
+            }
+        }
+
+        console.log("Selected driver:", driver);
+        setSelectedDriver(driver);
+    };
+
+    React.useEffect(() => {
+        timeService.sync();
+    }, []);
+
     const handleCreateOrder = (e) => {
         e.preventDefault();
-        if (!address) return;
+        if (!address || !number) return;
+
+        // Formata o endereço completo: "Rua X, 123 - Bairro, Cidade - PR"
+        const fullAddress = `${address}, ${number}`;
+
+        const now = timeService.getNow();
 
         const newOrder = {
-            address,
+            address: fullAddress,
             description: description || 'Sem descrição',
             status: 'EM_PREPARO',
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            createdAt: now.toISOString(), // Store full timestamp for timer
             motoboyId: null
         };
 
         addOrder(newOrder);
         setAddress('');
+        setNumber('');
         setDescription('');
     };
 
     const handleMoveOrder = (id, newStatus) => {
+        // Logic for assigning/releasing drivers
+        if (newStatus === 'A_CAMINHO') {
+            // Assign a driver (FIFO - First available)
+            const availableDriver = drivers.find(d => !d.active_order_id);
+
+            if (availableDriver) {
+                // Update Driver State
+                setDrivers(prevDrivers => prevDrivers.map(d =>
+                    d.driverId === availableDriver.driverId
+                        ? { ...d, active_order_id: `ORD-${id}`, active_order_destination: null } // We could set destination here if we had it
+                        : d
+                ));
+
+                // Update Order with Driver Info (Mocking this update since we don't have a real backend for it yet)
+                // In a real app, updateOrderStatus would handle this or we'd make a separate call
+                updateOrderLocal(id, {
+                    driverName: availableDriver.name,
+                    driverId: availableDriver.driverId
+                });
+            } else {
+                alert("Não há entregadores disponíveis!");
+                return; // Prevent move if no driver
+            }
+        } else if (newStatus === 'ENTREGUE') {
+            // Release the driver
+            const order = orders.find(o => o.id === id);
+            // Find driver who has this order
+            const driverId = order?.driverId; // Or search by active_order_id if we didn't persist it well
+
+            setDrivers(prevDrivers => prevDrivers.map(d =>
+                (d.active_order_id === `ORD-${id}` || d.driverId === driverId)
+                    ? { ...d, active_order_id: null, active_order_destination: null }
+                    : d
+            ));
+        }
+
         updateOrderStatus(id, newStatus);
     };
 
@@ -57,10 +198,18 @@ export default function Atendente() {
                         <h2 className="text-xl font-bold text-text-primary mb-4">Novo Pedido</h2>
                         <form onSubmit={handleCreateOrder} className="space-y-4">
                             <AddressAutocomplete
-                                label="Endereço"
+                                label="Logradouro"
                                 value={address}
                                 onChange={setAddress}
-                                placeholder="Busque o endereço..."
+                                placeholder="Busque a rua..."
+                            />
+
+                            <Input
+                                label="Número"
+                                value={number}
+                                onChange={(e) => setNumber(e.target.value)}
+                                placeholder="Ex: 123"
+                                required
                             />
 
                             <Input
@@ -84,11 +233,24 @@ export default function Atendente() {
                         <CheckCircle className="w-4 h-4 mr-2" />
                         Ver Concluídas
                     </Button>
+
+                    {/* Return List */}
+                    <div className="mt-6">
+                        <ReturnList
+                            drivers={drivers}
+                            tenantStoreLocation={tenantStoreLocation}
+                            onTrackDriver={setSelectedDriver}
+                        />
+                    </div>
                 </div>
 
                 {/* Kanban */}
                 <div className="lg:col-span-3">
-                    <KanbanBoard orders={orders} onMoveOrder={handleMoveOrder} />
+                    <KanbanBoard
+                        orders={orders}
+                        onMoveOrder={handleMoveOrder}
+                        onTrackOrder={handleTrackOrder}
+                    />
                 </div>
             </div>
 
@@ -128,6 +290,15 @@ export default function Atendente() {
                         </div>
                     </Card>
                 </div>
+            )}
+            {/* Tracking Modal */}
+            {selectedDriver && (
+                <TrackingModal
+                    isOpen={!!selectedDriver}
+                    onClose={() => setSelectedDriver(null)}
+                    driver={selectedDriver}
+                    tenantStoreLocation={tenantStoreLocation}
+                />
             )}
         </div>
     );

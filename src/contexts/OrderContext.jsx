@@ -24,16 +24,36 @@ export function OrderProvider({ children }) {
             } else if (user.role === 'motoboy') {
                 data = await api.getOrdersMotoboy();
             }
-            // Ensure data is an array and map to frontend model
-            const mappedData = (Array.isArray(data) ? data : []).map(item => ({
-                id: item.SK, // Use SK as unique ID
-                address: item.enderecoDestino,
-                description: item.nomeCliente, // Mapping nomeCliente to description
-                status: item.deliveryStatus,
-                motoboyId: item.motoboyId,
-                time: '10:30' // Placeholder time, backend doesn't have it yet
-            }));
-            setOrders(mappedData);
+
+            setOrders(prevOrders => {
+                const prevOrdersMap = new Map(prevOrders.map(o => [o.id, o]));
+
+                // Ensure data is an array and map to frontend model
+                return (Array.isArray(data) ? data : []).map(item => {
+                    const prevOrder = prevOrdersMap.get(item.SK);
+
+                    // If createdAt is missing from backend, try to use previous one, or generate new
+                    let createdAt = item.createdAt;
+                    if (!createdAt) {
+                        createdAt = prevOrder?.createdAt || new Date().toISOString();
+                    }
+
+                    return {
+                        id: item.SK, // Use SK as unique ID
+                        address: item.enderecoDestino,
+                        description: item.nomeCliente, // Mapping nomeCliente to description
+                        status: item.deliveryStatus,
+                        motoboyId: item.motoboyId,
+                        time: item.time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        createdAt: createdAt,
+                        valorFrete: item.valorFrete,
+                        distance: item.distance,
+                        // Preserve local fields if not present in backend
+                        driverName: item.driverName || prevOrder?.driverName,
+                        driverId: item.driverId || prevOrder?.driverId
+                    };
+                });
+            });
         } catch (error) {
             console.error('Error fetching orders:', error);
         }
@@ -51,17 +71,13 @@ export function OrderProvider({ children }) {
             // Adapt frontend model to backend model
             const backendOrder = {
                 numeroPedido: Math.floor(Math.random() * 10000), // Temp ID generation
-                nomeCliente: 'Cliente', // Placeholder if not provided
+                nomeCliente: orderData.description || 'Cliente',
                 enderecoDestino: orderData.address,
                 bairro: 'Centro', // Placeholder
-                diaSimulado: '1'
+                diaSimulado: '1',
+                time: orderData.time,
+                createdAt: orderData.createdAt
             };
-
-            // If description contains more info, we might parse it, but for now sending basics
-            // The backend expects specific fields. We might need to adjust Atendente.jsx to send correct fields
-            // or map them here.
-            // Mapping 'description' to 'nomeCliente' or similar for now to avoid breaking backend validation
-            backendOrder.nomeCliente = orderData.description || 'Cliente';
 
             await api.createOrder(backendOrder);
             await fetchOrders();
@@ -104,8 +120,15 @@ export function OrderProvider({ children }) {
         }
     };
 
+    // Helper for demo/local updates that shouldn't wait for backend
+    const updateOrderLocal = (id, updates) => {
+        setOrders(prevOrders => prevOrders.map(o =>
+            o.id === id ? { ...o, ...updates } : o
+        ));
+    };
+
     return (
-        <OrderContext.Provider value={{ orders, addOrder, updateOrderStatus, assignMotoboy, returnOrder, refresh: fetchOrders }}>
+        <OrderContext.Provider value={{ orders, addOrder, updateOrderStatus, assignMotoboy, returnOrder, refresh: fetchOrders, updateOrderLocal }}>
             {children}
         </OrderContext.Provider>
     );

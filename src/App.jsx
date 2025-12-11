@@ -7,6 +7,7 @@ import Atendente from './pages/Atendente';
 import Motoboy from './pages/Motoboy';
 import Admin from './pages/Admin';
 import Lojista from './pages/Lojista';
+import LogisticsTest from './pages/LogisticsTest';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, isAuthenticated } = useAuth();
@@ -54,6 +55,7 @@ function App() {
                 <Lojista />
               </ProtectedRoute>
             } />
+            <Route path="/logistics-test" element={<LogisticsTest />} />
           </Routes>
         </Router>
       </OrderProvider>

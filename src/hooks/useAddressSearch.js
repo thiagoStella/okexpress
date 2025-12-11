@@ -1,30 +1,28 @@
 import { useState, useMemo } from 'react';
 import Fuse from 'fuse.js';
-import locais from '../data/locais-curitiba.json';
+import locaisCuritiba from '../data/locais-curitiba.json';
 
 export function useAddressSearch() {
-    const [results, setResults] = useState([]);
+    const [query, setQuery] = useState('');
 
+    // Configuração do Fuse.js
     const fuse = useMemo(() => {
-        return new Fuse(locais, {
-            includeScore: true,
-            threshold: 0.3, // Lower = more strict
+        return new Fuse(locaisCuritiba, {
+            threshold: 0.3, // Sensibilidade (0.0 = exato, 1.0 = qualquer coisa)
+            limit: 10,      // Máximo de resultados
         });
     }, []);
 
-    const search = (query) => {
-        if (!query) {
-            setResults([]);
-            return;
-        }
+    const suggestions = useMemo(() => {
+        if (!query || query.length < 3) return [];
 
-        const searchResults = fuse.search(query);
-        // Return just the items (strings)
-        setResults(searchResults.map(result => result.item));
-    };
+        const results = fuse.search(query);
+        return results.map(result => result.item);
+    }, [query, fuse]);
 
     return {
-        results,
-        search
+        query,
+        setQuery,
+        suggestions
     };
 }

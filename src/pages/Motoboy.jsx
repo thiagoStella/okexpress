@@ -15,6 +15,11 @@ export default function Motoboy() {
     const availableOrders = orders.filter(o => (o.status === 'A_CAMINHO' || o.status === 'AGUARDANDO_ENTREGA' || o.status === 'EM_PREPARO') && !o.motoboyId);
     const myOrders = orders.filter(o => o.motoboyId === user?.id && o.status !== 'ENTREGUE');
 
+    // Calculate total earnings from delivered orders
+    const totalEarnings = orders
+        .filter(o => o.motoboyId === user?.id && o.status === 'ENTREGUE')
+        .reduce((sum, order) => sum + (Number(order.valorFrete) || 0), 0);
+
     const handleAcceptOrder = (id) => {
         assignMotoboy(id, user.id);
         setActiveTab('my-orders');
@@ -31,11 +36,17 @@ export default function Motoboy() {
     return (
         <div className="min-h-screen bg-brand-bg pb-20">
             <header className="bg-brand-secondary p-4 sticky top-0 z-10 shadow-md">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mb-2">
                     <h1 className="text-xl font-bold text-text-primary">Motoboy App</h1>
                     <Button variant="ghost" size="sm" onClick={logout}>
                         <LogOut className="w-5 h-5" />
                     </Button>
+                </div>
+                <div className="bg-brand-bg/50 p-2 rounded flex justify-between items-center">
+                    <span className="text-text-secondary text-sm">Ganhos da Sessão:</span>
+                    <span className="text-green-400 font-bold text-lg">
+                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalEarnings)}
+                    </span>
                 </div>
             </header>
 
@@ -77,8 +88,18 @@ export default function Motoboy() {
                                         order.status === 'EM_PREPARO' ? "border-gray-500 opacity-75" : "border-yellow-500"
                                     )}>
                                         <div className="flex justify-between items-start mb-3">
-                                            <span className="font-bold text-lg text-text-primary">#{order.id}</span>
-                                            <span className="text-text-secondary">{order.time}</span>
+                                            <div>
+                                                <span className="font-bold text-lg text-text-primary block">#{order.id}</span>
+                                                <span className="text-text-secondary text-sm">{order.time}</span>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className="block text-green-400 font-bold text-lg">
+                                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(order.valorFrete || 0)}
+                                                </span>
+                                                {order.distance && (
+                                                    <span className="text-xs text-text-secondary">{order.distance} km</span>
+                                                )}
+                                            </div>
                                         </div>
 
                                         <div className="flex items-start gap-3 mb-2">
@@ -120,10 +141,20 @@ export default function Motoboy() {
                                 myOrders.map(order => (
                                     <Card key={order.id} className="border-l-4 border-green-500">
                                         <div className="flex justify-between items-start mb-3">
-                                            <span className="font-bold text-lg text-text-primary">#{order.id}</span>
-                                            <span className="bg-green-900/50 text-green-400 px-2 py-1 rounded text-sm">
-                                                Em Andamento
-                                            </span>
+                                            <div>
+                                                <span className="font-bold text-lg text-text-primary block">#{order.id}</span>
+                                                <span className="bg-green-900/50 text-green-400 px-2 py-1 rounded text-sm inline-block mt-1">
+                                                    Em Andamento
+                                                </span>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className="block text-green-400 font-bold text-lg">
+                                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(order.valorFrete || 0)}
+                                                </span>
+                                                {order.distance && (
+                                                    <span className="text-xs text-text-secondary">{order.distance} km</span>
+                                                )}
+                                            </div>
                                         </div>
 
                                         <div className="flex items-start gap-3 mb-2">

@@ -3,7 +3,7 @@ const config = {
         apiUrl: 'https://4zz8d847nk.execute-api.sa-east-1.amazonaws.com'
     },
     staging: {
-        apiUrl: 'https://4zz8d847nk.execute-api.sa-east-1.amazonaws.com'
+        apiUrl: 'https://16layzd1jd.execute-api.sa-east-1.amazonaws.com'
     },
     production: {
         apiUrl: 'https://api.okmotoboys.com.br'
