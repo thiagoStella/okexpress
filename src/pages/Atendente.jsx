@@ -79,13 +79,29 @@ export default function Atendente() {
             let destination = { ...tenantStoreLocation };
             let geocodeSuccess = false;
 
+            // Helper to clean address
+            const cleanAddress = (addr) => {
+                return addr
+                    .replace(/\b(Av|Rua|Ver|Prof|Dr|Alameda|Travessa|Praça)\.?\s+/gi, '') // Remove prefixes
+                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove accents
+                    .trim();
+            };
+
+            const cleanedAddress = cleanAddress(order.address);
+            const addressWithoutNumber = order.address.replace(/[0-9,]/g, '').trim();
+            const cleanedAddressWithoutNumber = cleanAddress(addressWithoutNumber);
+
             const geocodeStrategies = [
                 // Strategy 1: Full Specific Address
                 `${order.address}, Curitiba, Paraná, Brazil`,
                 // Strategy 2: Less Specific (City level)
                 `${order.address}, Curitiba`,
-                // Strategy 3: Just Street Name (remove numbers) if possible
-                `${order.address.replace(/[0-9,]/g, '').trim()}, Curitiba`
+                // Strategy 3: Cleaned Address (No prefixes/accents) + Number
+                `${cleanedAddress}, Curitiba`,
+                // Strategy 4: Just Street Name (remove numbers)
+                `${addressWithoutNumber}, Curitiba`,
+                // Strategy 5: Cleaned Street Name (No prefixes/accents/numbers)
+                `${cleanedAddressWithoutNumber}, Curitiba`
             ];
 
             for (const query of geocodeStrategies) {
