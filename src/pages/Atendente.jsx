@@ -77,24 +77,41 @@ export default function Atendente() {
         if (!driver.active_order_destination && order.address) {
             // Default destination (Store)
             let destination = { ...tenantStoreLocation };
+            let geocodeSuccess = false;
 
-            try {
-                // Clean address for search
-                const query = `${order.address}, Curitiba, Paraná, Brazil`;
-                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
-                const data = await response.json();
+            const geocodeStrategies = [
+                // Strategy 1: Full Specific Address
+                `${order.address}, Curitiba, Paraná, Brazil`,
+                // Strategy 2: Less Specific (City level)
+                `${order.address}, Curitiba`,
+                // Strategy 3: Just Street Name (remove numbers) if possible
+                `${order.address.replace(/[0-9,]/g, '').trim()}, Curitiba`
+            ];
 
-                if (data && data.length > 0) {
-                    destination = {
-                        lat: parseFloat(data[0].lat),
-                        long: parseFloat(data[0].lon)
-                    };
-                    console.log("Geocoded destination:", destination);
-                } else {
-                    console.warn("Geocoding failed, using default store location.");
+            for (const query of geocodeStrategies) {
+                if (geocodeSuccess) break;
+                try {
+                    console.log(`Attempting geocode with: ${query}`);
+                    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+                    const data = await response.json();
+
+                    if (data && data.length > 0) {
+                        destination = {
+                            lat: parseFloat(data[0].lat),
+                            long: parseFloat(data[0].lon)
+                        };
+                        console.log("Geocoded destination:", destination);
+                        geocodeSuccess = true;
+                    }
+                } catch (error) {
+                    console.warn(`Geocoding failed for query "${query}":`, error);
                 }
-            } catch (error) {
-                console.error("Error geocoding address:", error);
+            }
+
+            if (!geocodeSuccess) {
+                console.warn("All geocoding attempts failed, using default store location.");
+                // Optional: Show a toast or alert here if you had a toast system
+                // alert("Não foi possível localizar o endereço exato. Mostrando rota até a loja."); 
             }
 
             // Update the local driver object (and state if it's a real driver)
