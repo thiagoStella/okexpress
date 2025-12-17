@@ -22,7 +22,7 @@ export function AuthProvider({ children }) {
             id = 'atendente-1';
         } else if (username === 'motoboy' && password === '123') {
             role = 'motoboy';
-            id = 'motoboy-1';
+            id = 'driver_thiago';
         } else if (username === 'lojista' && password === '123') {
             role = 'lojista';
             id = 'lojista-1';

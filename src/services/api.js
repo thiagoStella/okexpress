@@ -23,9 +23,10 @@ export const api = {
         return response.json();
     },
 
-    updateOrderStatus: async (id, status, motoboyId = null) => {
+    updateOrderStatus: async (id, status, motoboyId, driverName) => {
         const body = { deliveryStatus: status };
-        if (motoboyId) body.motoboyId = motoboyId;
+        if (motoboyId !== undefined) body.motoboyId = motoboyId;
+        if (driverName !== undefined) body.driverName = driverName;
 
         const response = await fetch(`${API_URL}/pedido/${encodeURIComponent(id)}/status`, {
             method: 'PATCH',

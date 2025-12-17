@@ -50,7 +50,7 @@ export function OrderProvider({ children }) {
                         distance: item.distance,
                         // Preserve local fields if not present in backend
                         driverName: item.driverName || prevOrder?.driverName,
-                        driverId: item.driverId || prevOrder?.driverId
+                        driverId: item.driverId || item.motoboyId || prevOrder?.driverId
                     };
                 });
             });
@@ -87,12 +87,12 @@ export function OrderProvider({ children }) {
         }
     };
 
-    const updateOrderStatus = async (id, status) => {
+    const updateOrderStatus = async (id, status, motoboyId) => {
         try {
             // Backend expects SK as ID (e.g., DIA#1#PEDIDO#123)
             // We need to ensure we are passing the full SK.
             // The fetchOrders returns items with SK.
-            await api.updateOrderStatus(id, status);
+            await api.updateOrderStatus(id, status, motoboyId);
             await fetchOrders();
         } catch (error) {
             console.error('Error updating order:', error);
@@ -102,7 +102,7 @@ export function OrderProvider({ children }) {
 
     const assignMotoboy = async (id, motoboyId) => {
         try {
-            await api.updateOrderStatus(id, 'A_CAMINHO', motoboyId);
+            await api.updateOrderStatus(id, 'A_CAMINHO', motoboyId, user?.name);
             await fetchOrders();
         } catch (error) {
             console.error('Error assigning motoboy:', error);

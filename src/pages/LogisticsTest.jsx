@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AVAILABLE_MOTOBOYS } from '../config/motoboys';
 import ReturnList from '../components/logistics/ReturnList';
 import TrackingModal from '../components/logistics/TrackingModal';
 
@@ -10,41 +11,17 @@ const LogisticsTest = () => {
         long: -49.3471
     };
 
-    // Mock Drivers Data
-    const [drivers, setDrivers] = useState([
-        {
-            driverId: '101',
-            name: 'João Motoboy',
-            // Near Delivery A: R. Prof. Francisco Zardo, 58 (Santa Felicidade)
-            current_lat: -25.4040,
-            current_long: -49.3390,
-            last_update: Date.now(),
-            active_order_id: null, // Returning to Store (Rua João Esmalhoto)
-            active_order_destination: null
-        },
-        {
-            driverId: '102',
-            name: 'Maria Entregas',
-            // Near Delivery B: Av. Manoel Ribas, 100 (Mercês)
-            current_lat: -25.4140,
-            current_long: -49.3080,
-            last_update: Date.now(),
-            active_order_id: 'ORD-555', // Delivering to Delivery B
-            active_order_destination: {
-                lat: -25.4143, // Av. Manoel Ribas, 100
-                long: -49.3088
-            }
-        },
-        {
-            driverId: '103',
-            name: 'Pedro Rápido',
-            current_lat: -25.4250,
-            current_long: -49.2700,
-            last_update: Date.now(),
-            active_order_id: null, // Returning
-            active_order_destination: null
-        }
-    ]);
+    // Mock Drivers Data (Initialized from config)
+    const [drivers, setDrivers] = useState(AVAILABLE_MOTOBOYS.map((m, index) => ({
+        driverId: m.id,
+        name: m.name,
+        // Distribute them slightly
+        current_lat: -25.4135 + (index * 0.01),
+        current_long: -49.3471 + (index * 0.01),
+        last_update: Date.now(),
+        active_order_id: null,
+        active_order_destination: null
+    })));
 
     const [selectedDriver, setSelectedDriver] = useState(null);
 

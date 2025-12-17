@@ -6,7 +6,7 @@ const config = {
         apiUrl: 'https://16layzd1jd.execute-api.sa-east-1.amazonaws.com'
     },
     production: {
-        apiUrl: 'https://api.okmotoboys.com.br'
+        apiUrl: 'https://16layzd1jd.execute-api.sa-east-1.amazonaws.com'
     }
 };
 

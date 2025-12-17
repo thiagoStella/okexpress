@@ -12,7 +12,8 @@ export default function Motoboy() {
     const { orders, assignMotoboy, updateOrderStatus, returnOrder } = useOrders();
     const [activeTab, setActiveTab] = useState('available'); // 'available' | 'my-orders'
 
-    const availableOrders = orders.filter(o => (o.status === 'A_CAMINHO' || o.status === 'AGUARDANDO_ENTREGA' || o.status === 'EM_PREPARO') && !o.motoboyId);
+    // Only show orders that are explicitly waiting for a driver OR in preparation
+    const availableOrders = orders.filter(o => (o.status === 'AGUARDANDO_ENTREGA' || o.status === 'EM_PREPARO') && !o.motoboyId);
     const myOrders = orders.filter(o => o.motoboyId === user?.id && o.status !== 'ENTREGUE');
 
     // Calculate total earnings from delivered orders
@@ -26,7 +27,7 @@ export default function Motoboy() {
     };
 
     const handleFinishOrder = (id) => {
-        updateOrderStatus(id, 'ENTREGUE');
+        updateOrderStatus(id, 'ENTREGUE', user.id);
     };
 
     const handleReturnOrder = (id) => {
@@ -82,51 +83,51 @@ export default function Motoboy() {
                                     Nenhuma entrega disponível no momento.
                                 </div>
                             ) : (
-                                availableOrders.map(order => (
-                                    <Card key={order.id} className={clsx(
-                                        "border-l-4",
-                                        order.status === 'EM_PREPARO' ? "border-gray-500 opacity-75" : "border-yellow-500"
-                                    )}>
-                                        <div className="flex justify-between items-start mb-3">
-                                            <div>
-                                                <span className="font-bold text-lg text-text-primary block">#{order.id}</span>
-                                                <span className="text-text-secondary text-sm">{order.time}</span>
+                                availableOrders.map(order => {
+                                    const isPreparo = order.status === 'EM_PREPARO';
+                                    return (
+                                        <Card key={order.id} className="border-l-4 border-yellow-500">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <div>
+                                                    <span className="font-bold text-lg text-text-primary block">#{order.id}</span>
+                                                    <span className="text-text-secondary text-sm">{order.time}</span>
+                                                </div>
+                                                <div className="text-right">
+                                                    <span className="block text-green-400 font-bold text-lg">
+                                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(order.valorFrete || 0)}
+                                                    </span>
+                                                    {order.distance && (
+                                                        <span className="text-xs text-text-secondary">{order.distance} km</span>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <div className="text-right">
-                                                <span className="block text-green-400 font-bold text-lg">
-                                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(order.valorFrete || 0)}
-                                                </span>
-                                                {order.distance && (
-                                                    <span className="text-xs text-text-secondary">{order.distance} km</span>
-                                                )}
+
+                                            <div className="flex items-start gap-3 mb-2">
+                                                <MapPin className="w-5 h-5 text-brand-red mt-1 shrink-0" />
+                                                <p className="text-text-primary text-lg">{order.address}</p>
                                             </div>
-                                        </div>
 
-                                        <div className="flex items-start gap-3 mb-2">
-                                            <MapPin className="w-5 h-5 text-brand-red mt-1 shrink-0" />
-                                            <p className="text-text-primary text-lg">{order.address}</p>
-                                        </div>
-
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <Package className="w-5 h-5 text-text-secondary shrink-0" />
-                                            <p className="text-text-secondary">{order.description}</p>
-                                        </div>
-
-                                        {order.status === 'EM_PREPARO' ? (
-                                            <div className="w-full py-3 text-center font-bold text-text-secondary bg-brand-bg rounded border border-dashed border-gray-700">
-                                                EM PREPARO...
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <Package className="w-5 h-5 text-text-secondary shrink-0" />
+                                                <p className="text-text-secondary">{order.description}</p>
                                             </div>
-                                        ) : (
+
                                             <Button
                                                 size="lg"
-                                                className="w-full font-bold"
-                                                onClick={() => handleAcceptOrder(order.id)}
+                                                className={clsx(
+                                                    "w-full font-bold transition-colors",
+                                                    isPreparo
+                                                        ? "bg-gray-600 text-gray-300 cursor-not-allowed hover:bg-gray-600"
+                                                        : "bg-green-600 hover:bg-green-700 text-white"
+                                                )}
+                                                onClick={() => !isPreparo && handleAcceptOrder(order.id)}
+                                                disabled={isPreparo}
                                             >
-                                                ACEITAR ENTREGA
+                                                {isPreparo ? '🕒 Em Preparo' : '✅ Aceitar Corrida'}
                                             </Button>
-                                        )}
-                                    </Card>
-                                ))
+                                        </Card>
+                                    );
+                                })
                             )}
                         </>
                     )}

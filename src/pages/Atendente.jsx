@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { AVAILABLE_MOTOBOYS, getDriverName } from '../config/motoboys';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card } from '../components/ui/Card';
@@ -25,52 +26,32 @@ export default function Atendente() {
     const [selectedDriver, setSelectedDriver] = useState(null);
     const tenantStoreLocation = { lat: -25.4135, long: -49.3471 }; // São Braz
 
-    // Mock Drivers (Lifted from LogisticsTest for demo)
-    const [drivers, setDrivers] = useState([
-        {
-            driverId: '101',
-            name: 'João Motoboy',
-            current_lat: -25.4040, current_long: -49.3390,
-            last_update: Date.now(),
-            active_order_id: null,
-            active_order_destination: null
-        },
-        {
-            driverId: '102',
-            name: 'Maria Entregas',
-            current_lat: -25.4140, current_long: -49.3080,
-            last_update: Date.now(),
-            active_order_id: 'ORD-555',
-            active_order_destination: { lat: -25.4143, long: -49.3088 }
-        },
-        {
-            driverId: '103',
-            name: 'Pedro Rápido',
-            current_lat: -25.4250, current_long: -49.2700,
-            last_update: Date.now(),
-            active_order_id: null,
-            active_order_destination: null
-        }
-    ]);
+    // Mock Drivers (Initialized from config)
+    const [drivers, setDrivers] = useState(AVAILABLE_MOTOBOYS.map((m, index) => ({
+        driverId: m.id,
+        name: m.name,
+        // Distribute them slightly so they don't overlap perfectly
+        current_lat: -25.4135 + (index * 0.01),
+        current_long: -49.3471 + (index * 0.01),
+        last_update: Date.now(),
+        active_order_id: null,
+        active_order_destination: null
+    })));
 
     const handleTrackOrder = async (order) => {
         console.log("Tracking order:", order);
 
         // 1. Try to find a real driver assigned to this order
-        let driver = drivers.find(d => d.active_order_id === `ORD-${order.id}`);
+        // Check both active_order_id AND direct driverId match
+        let driver = drivers.find(d => d.active_order_id === `ORD-${order.id}` || d.driverId === order.driverId);
 
-        // 2. If no driver found (e.g. Test Button used), create a "Ghost Driver" for the demo
+        console.log("Driver lookup result:", driver, "Order DriverID:", order.driverId);
+
+        // 2. If no driver found, warn and return (DO NOT create ghost driver)
         if (!driver) {
-            console.log("No driver found, creating ghost driver for demo.");
-            driver = {
-                driverId: 'ghost-1',
-                name: 'Entregador Teste',
-                current_lat: tenantStoreLocation.lat, // Start at store
-                current_long: tenantStoreLocation.long,
-                last_update: Date.now(),
-                active_order_id: order.id,
-                active_order_destination: null // Will be filled below
-            };
+            console.warn("No driver found for this order. Cannot track.");
+            alert("Sem motorista atribuído para este pedido.");
+            return;
         }
 
         // 3. Ensure we have a destination (Geocode if missing)
@@ -206,6 +187,10 @@ export default function Atendente() {
                     ? { ...d, active_order_id: null, active_order_destination: null }
                     : d
             ));
+        } else if (newStatus === 'AGUARDANDO_ENTREGA') {
+            // Ensure we clear the motoboyId so it appears in "Available"
+            updateOrderStatus(id, newStatus, null);
+            return;
         }
 
         updateOrderStatus(id, newStatus);
