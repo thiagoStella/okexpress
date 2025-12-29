@@ -1,12 +1,12 @@
 const config = {
     development: {
-        apiUrl: 'https://4zz8d847nk.execute-api.sa-east-1.amazonaws.com'
+        apiUrl: 'https://eix8rlheu8.execute-api.sa-east-1.amazonaws.com'
     },
     staging: {
-        apiUrl: 'https://16layzd1jd.execute-api.sa-east-1.amazonaws.com'
+        apiUrl: 'https://eix8rlheu8.execute-api.sa-east-1.amazonaws.com'
     },
     production: {
-        apiUrl: 'https://16layzd1jd.execute-api.sa-east-1.amazonaws.com'
+        apiUrl: 'https://eix8rlheu8.execute-api.sa-east-1.amazonaws.com'
     }
 };
 
