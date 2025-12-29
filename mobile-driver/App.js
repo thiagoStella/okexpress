@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -8,50 +8,165 @@ import {
     TouchableOpacity,
     SafeAreaView,
     StatusBar,
+    Alert,
 } from 'react-native';
+import * as Location from 'expo-location';
+import * as TaskManager from 'expo-task-manager';
 
-// Mock data com 3 pedidos fictícios
-const MOCK_ORDERS = [
-    {
-        id: '1',
-        clientName: 'João Silva',
-        pickup: 'Rua das Flores, 123 - Centro',
-        delivery: 'Av. Paulista, 456 - Jardins',
-        distance: '3.2 km',
-        value: 'R$ 12,50',
-        time: '15 min',
-    },
-    {
-        id: '2',
-        clientName: 'Maria Santos',
-        pickup: 'Shopping Center - Loja 45',
-        delivery: 'Rua Augusta, 789 - Consolação',
-        distance: '5.1 km',
-        value: 'R$ 18,00',
-        time: '22 min',
-    },
-    {
-        id: '3',
-        clientName: 'Pedro Costa',
-        pickup: 'Restaurante Bom Sabor - Centro',
-        delivery: 'Rua Bahia, 321 - Higienópolis',
-        distance: '2.8 km',
-        value: 'R$ 10,00',
-        time: '12 min',
-    },
-];
+// Configuração
+const API_URL = 'https://eix8rlheu8.execute-api.sa-east-1.amazonaws.com';
+const DRIVER_ID = 1; // Hardcoded como "Thiago"
+const LOCATION_TASK_NAME = 'TASK_FETCH_LOCATION';
+
+// Definição da tarefa em background
+TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
+    if (error) {
+        console.error('❌ Erro no GPS:', error.message);
+        return;
+    }
+
+    if (data) {
+        const { locations } = data;
+        const location = locations[0];
+
+        if (location) {
+            const { latitude, longitude } = location.coords;
+
+            console.log('📍 Nova localização capturada:');
+            console.log(`   Lat: ${latitude}`);
+            console.log(`   Lng: ${longitude}`);
+            console.log(`   Timestamp: ${new Date().toLocaleTimeString()}`);
+
+            // Enviar para API
+            try {
+                console.log('🚀 Enviando localização para API...');
+
+                const response = await fetch(`${API_URL}/driver/tracking`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        driverId: DRIVER_ID,
+                        latitude,
+                        longitude,
+                        timestamp: new Date().toISOString(),
+                    }),
+                });
+
+                if (response.ok) {
+                    console.log('✅ Localização enviada com sucesso!');
+                } else {
+                    console.log(`⚠️ API respondeu com status: ${response.status}`);
+                }
+            } catch (err) {
+                console.error('❌ Erro ao enviar localização:', err.message);
+            }
+        }
+    }
+});
 
 export default function App() {
-    const [isAvailable, setIsAvailable] = useState(true);
+    const [isAvailable, setIsAvailable] = useState(false);
+    const [orders, setOrders] = useState([]);
+    const [hasLocationPermission, setHasLocationPermission] = useState(false);
 
-    const handleLogout = () => {
-        console.log('Logout pressionado');
-        // Aqui você implementará a lógica de logout futuramente
+    useEffect(() => {
+        requestPermissions();
+    }, []);
+
+    const requestPermissions = async () => {
+        try {
+            console.log('🔐 Solicitando permissões de localização...');
+
+            // Foreground permission
+            const { status: foregroundStatus } = await Location.requestForegroundPermissionsAsync();
+            if (foregroundStatus !== 'granted') {
+                Alert.alert(
+                    'Permissão Negada',
+                    'Precisamos de acesso à localização para rastrear entregas.'
+                );
+                return;
+            }
+
+            console.log('✅ Permissão de foreground concedida');
+
+            // Background permission
+            const { status: backgroundStatus } = await Location.requestBackgroundPermissionsAsync();
+            if (backgroundStatus !== 'granted') {
+                Alert.alert(
+                    'Permissão de Background',
+                    'Para rastreamento contínuo, permita acesso em segundo plano.'
+                );
+            } else {
+                console.log('✅ Permissão de background concedida');
+            }
+
+            setHasLocationPermission(true);
+        } catch (err) {
+            console.error('❌ Erro ao solicitar permissões:', err);
+        }
+    };
+
+    const toggleAvailability = async (value) => {
+        if (!hasLocationPermission) {
+            Alert.alert('Permissão Necessária', 'Permita o acesso à localização primeiro.');
+            return;
+        }
+
+        setIsAvailable(value);
+
+        if (value) {
+            // INICIAR rastreamento
+            try {
+                console.log('🟢 Iniciando rastreamento GPS...');
+
+                await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+                    accuracy: Location.Accuracy.High,
+                    timeInterval: 10000, // 10 segundos
+                    distanceInterval: 10, // 10 metros
+                    foregroundService: {
+                        notificationTitle: 'OK Express',
+                        notificationBody: 'Rastreamento ativo',
+                    },
+                });
+
+                console.log('✅ Rastreamento GPS iniciado!');
+                console.log('⏱️ Atualizações a cada 10 segundos ou 10 metros');
+
+            } catch (err) {
+                console.error('❌ Erro ao iniciar rastreamento:', err);
+                Alert.alert('Erro', 'Não foi possível iniciar o rastreamento.');
+                setIsAvailable(false);
+            }
+        } else {
+            // PARAR rastreamento
+            try {
+                console.log('🔴 Parando rastreamento GPS...');
+
+                const hasStarted = await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
+                if (hasStarted) {
+                    await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+                    console.log('✅ Rastreamento GPS parado');
+                }
+            } catch (err) {
+                console.error('❌ Erro ao parar rastreamento:', err);
+            }
+        }
+    };
+
+    const handleLogout = async () => {
+        // Parar rastreamento antes de sair
+        if (isAvailable) {
+            await toggleAvailability(false);
+        }
+        console.log('👋 Logout');
+        Alert.alert('Logout', 'Você saiu do sistema');
     };
 
     const handleAcceptOrder = (orderId) => {
-        console.log(`Pedido aceito: ${orderId}`);
-        // Aqui você implementará a lógica de aceitar pedido futuramente
+        console.log(`✅ Pedido aceito: ${orderId}`);
+        Alert.alert('Pedido Aceito', `Pedido #${orderId} aceito com sucesso!`);
     };
 
     const renderOrderCard = ({ item }) => (
@@ -98,9 +213,21 @@ export default function App() {
         </View>
     );
 
+    const renderEmptyList = () => (
+        <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>📦</Text>
+            <Text style={styles.emptyTitle}>Nenhum pedido disponível</Text>
+            <Text style={styles.emptySubtitle}>
+                {isAvailable
+                    ? 'Aguardando novos pedidos...'
+                    : 'Ative o status para receber pedidos'}
+            </Text>
+        </View>
+    );
+
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#2563eb" />
+            <StatusBar barStyle="light-content" backgroundColor="#111827" />
 
             {/* Header */}
             <View style={styles.header}>
@@ -118,34 +245,40 @@ export default function App() {
                         <Text
                             style={[
                                 styles.statusValue,
-                                { color: isAvailable ? '#16a34a' : '#dc2626' },
+                                { color: isAvailable ? '#22c55e' : '#ef4444' },
                             ]}
                         >
-                            {isAvailable ? 'Disponível' : 'Indisponível'}
+                            {isAvailable ? '🟢 Disponível' : '🔴 Indisponível'}
                         </Text>
                     </View>
                     <Switch
                         trackColor={{ false: '#ef4444', true: '#22c55e' }}
-                        thumbColor={isAvailable ? '#ffffff' : '#ffffff'}
+                        thumbColor="#ffffff"
                         ios_backgroundColor="#ef4444"
-                        onValueChange={setIsAvailable}
+                        onValueChange={toggleAvailability}
                         value={isAvailable}
                         style={styles.switch}
                     />
                 </View>
+                {isAvailable && (
+                    <View style={styles.trackingBadge}>
+                        <Text style={styles.trackingText}>📡 GPS Ativo</Text>
+                    </View>
+                )}
             </View>
 
             {/* Lista de Pedidos */}
             <View style={styles.ordersSection}>
                 <Text style={styles.sectionTitle}>
-                    Pedidos Disponíveis ({MOCK_ORDERS.length})
+                    Pedidos Disponíveis ({orders.length})
                 </Text>
                 <FlatList
-                    data={MOCK_ORDERS}
+                    data={orders}
                     renderItem={renderOrderCard}
                     keyExtractor={(item) => item.id}
                     contentContainerStyle={styles.listContent}
                     showsVerticalScrollIndicator={false}
+                    ListEmptyComponent={renderEmptyList}
                 />
             </View>
         </SafeAreaView>
@@ -155,49 +288,43 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f3f4f6',
+        backgroundColor: '#111827',
     },
     header: {
-        backgroundColor: '#2563eb',
+        backgroundColor: '#1f2937',
         paddingHorizontal: 20,
         paddingVertical: 16,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        borderBottomWidth: 1,
+        borderBottomColor: '#374151',
     },
     headerTitle: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#ffffff',
+        color: '#f3f4f6',
     },
     logoutButton: {
         paddingHorizontal: 16,
         paddingVertical: 8,
-        backgroundColor: '#1e40af',
+        backgroundColor: '#374151',
         borderRadius: 8,
     },
     logoutText: {
-        color: '#ffffff',
+        color: '#f3f4f6',
         fontSize: 14,
         fontWeight: '600',
     },
     statusSection: {
-        backgroundColor: '#ffffff',
+        backgroundColor: '#1f2937',
         marginHorizontal: 16,
         marginTop: 16,
         marginBottom: 8,
         padding: 20,
         borderRadius: 12,
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
+        borderWidth: 1,
+        borderColor: '#374151',
     },
     statusRow: {
         flexDirection: 'row',
@@ -206,7 +333,7 @@ const styles = StyleSheet.create({
     },
     statusLabel: {
         fontSize: 14,
-        color: '#6b7280',
+        color: '#9ca3af',
         marginBottom: 4,
     },
     statusValue: {
@@ -216,6 +343,19 @@ const styles = StyleSheet.create({
     switch: {
         transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
     },
+    trackingBadge: {
+        marginTop: 12,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        backgroundColor: '#065f46',
+        borderRadius: 6,
+        alignSelf: 'flex-start',
+    },
+    trackingText: {
+        color: '#d1fae5',
+        fontSize: 12,
+        fontWeight: '600',
+    },
     ordersSection: {
         flex: 1,
         marginTop: 8,
@@ -223,24 +363,22 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#374151',
+        color: '#f3f4f6',
         marginHorizontal: 16,
         marginBottom: 12,
     },
     listContent: {
         paddingHorizontal: 16,
         paddingBottom: 16,
+        flexGrow: 1,
     },
     card: {
-        backgroundColor: '#ffffff',
+        backgroundColor: '#1f2937',
         borderRadius: 12,
         padding: 16,
         marginBottom: 12,
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.15,
-        shadowRadius: 3.84,
+        borderWidth: 1,
+        borderColor: '#374151',
     },
     cardHeader: {
         flexDirection: 'row',
@@ -251,12 +389,12 @@ const styles = StyleSheet.create({
     clientName: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#111827',
+        color: '#f3f4f6',
     },
     orderValue: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#16a34a',
+        color: '#22c55e',
     },
     addressSection: {
         marginBottom: 16,
@@ -281,7 +419,7 @@ const styles = StyleSheet.create({
         width: 12,
         height: 12,
         borderRadius: 6,
-        backgroundColor: '#16a34a',
+        backgroundColor: '#22c55e',
     },
     addressText: {
         flex: 1,
@@ -289,17 +427,17 @@ const styles = StyleSheet.create({
     },
     addressLabel: {
         fontSize: 12,
-        color: '#6b7280',
+        color: '#9ca3af',
         marginBottom: 2,
     },
     addressValue: {
         fontSize: 14,
-        color: '#374151',
+        color: '#d1d5db',
         lineHeight: 20,
     },
     cardFooter: {
         borderTopWidth: 1,
-        borderTopColor: '#e5e7eb',
+        borderTopColor: '#374151',
         paddingTop: 12,
     },
     infoRow: {
@@ -309,7 +447,7 @@ const styles = StyleSheet.create({
     },
     infoText: {
         fontSize: 14,
-        color: '#6b7280',
+        color: '#9ca3af',
     },
     acceptButton: {
         backgroundColor: '#16a34a',
@@ -321,5 +459,26 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 60,
+    },
+    emptyText: {
+        fontSize: 64,
+        marginBottom: 16,
+    },
+    emptyTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#f3f4f6',
+        marginBottom: 8,
+    },
+    emptySubtitle: {
+        fontSize: 14,
+        color: '#9ca3af',
+        textAlign: 'center',
     },
 });
