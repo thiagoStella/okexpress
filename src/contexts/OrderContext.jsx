@@ -22,14 +22,18 @@ export function OrderProvider({ children }) {
                 // Hardcoded day '1' for MVP/Staging as per legacy logic
                 data = await api.getOrdersAtendente('1');
             } else if (user.role === 'motoboy') {
+                console.log('🔍 DEBUG MOBILE: Fetching orders for motoboy...');
                 data = await api.getOrdersMotoboy();
+                console.log('🔍 DEBUG MOBILE: Received data:', data);
+                console.log('🔍 DEBUG MOBILE: Data is array?', Array.isArray(data));
+                console.log('🔍 DEBUG MOBILE: Data length:', data?.length);
             }
 
             setOrders(prevOrders => {
                 const prevOrdersMap = new Map(prevOrders.map(o => [o.id, o]));
 
                 // Ensure data is an array and map to frontend model
-                return (Array.isArray(data) ? data : []).map(item => {
+                const mappedOrders = (Array.isArray(data) ? data : []).map(item => {
                     const prevOrder = prevOrdersMap.get(item.SK);
 
                     // If createdAt is missing from backend, try to use previous one, or generate new
@@ -53,6 +57,17 @@ export function OrderProvider({ children }) {
                         driverId: item.driverId || item.motoboyId || prevOrder?.driverId
                     };
                 });
+
+                // DEBUG for mobile
+                if (user?.role === 'motoboy') {
+                    console.log('🔍 DEBUG MOBILE: Mapped orders:', mappedOrders);
+                    console.log('🔍 DEBUG MOBILE: Total mapped orders:', mappedOrders.length);
+                    if (mappedOrders.length > 0) {
+                        console.log('🔍 DEBUG MOBILE: First order sample:', mappedOrders[0]);
+                    }
+                }
+
+                return mappedOrders;
             });
         } catch (error) {
             console.error('Error fetching orders:', error);
