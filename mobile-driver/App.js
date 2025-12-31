@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     View,
     Text,
@@ -14,7 +14,7 @@ import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 
 // Configuração
-const API_URL = 'https://eix8rlheu8.execute-api.sa-east-1.amazonaws.com';
+const API_URL = 'https://16layzd1jd.execute-api.sa-east-1.amazonaws.com';
 const DRIVER_ID = 1; // Hardcoded como "Thiago"
 const LOCATION_TASK_NAME = 'TASK_FETCH_LOCATION';
 
@@ -73,7 +73,49 @@ export default function App() {
 
     useEffect(() => {
         requestPermissions();
+        fetchOrders(); // Buscar pedidos ao iniciar
+
+        // Polling: atualizar pedidos a cada 5 segundos (mesmo que web app)
+        const interval = setInterval(fetchOrders, 5000);
+
+        return () => clearInterval(interval); // Cleanup
+    }, [fetchOrders]);
+
+    const fetchOrders = useCallback(async () => {
+        try {
+            console.log('📦 Buscando pedidos disponíveis...');
+            const response = await fetch(`${API_URL}/pedidos/motoboy`);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('📦 RAW DATA DO BACKEND:', JSON.stringify(data, null, 2));
+                console.log(`✅ ${data.length} pedidos recebidos do backend`);
+
+                // Filtrar apenas pedidos disponíveis (mesmo filtro do web app)
+                const availableOrders = data.filter(order => {
+                    const isAvailableStatus = order.deliveryStatus === 'EM_PREPARO' ||
+                        order.deliveryStatus === 'AGUARDANDO_ENTREGA';
+                    const hasNoDriver = !order.motoboyId || order.motoboyId === null;
+                    return isAvailableStatus && hasNoDriver;
+                });
+
+                console.log(`🔍 ${availableOrders.length} pedidos disponíveis após filtro`);
+                console.log('📋 Pedidos disponíveis:', availableOrders.map(o => ({
+                    id: o.SK,
+                    status: o.deliveryStatus,
+                    motoboyId: o.motoboyId,
+                    endereco: o.enderecoDestino
+                })));
+
+                setOrders(availableOrders);
+            } else {
+                console.log(`⚠️ Erro ao buscar pedidos: ${response.status}`);
+            }
+        } catch (err) {
+            console.error('❌ Erro ao buscar pedidos:', err.message);
+        }
     }, []);
+
 
     const requestPermissions = async () => {
         try {
@@ -172,42 +214,51 @@ export default function App() {
     const renderOrderCard = ({ item }) => (
         <View style={styles.card}>
             <View style={styles.cardHeader}>
-                <Text style={styles.clientName}>{item.clientName}</Text>
-                <Text style={styles.orderValue}>{item.value}</Text>
+                <Text style={styles.clientName}>{item.nomeCliente || 'Cliente'}</Text>
+                <Text style={styles.orderValue}>R$ {item.valorFrete?.toFixed(2) || '0.00'}</Text>
             </View>
 
             <View style={styles.addressSection}>
                 <View style={styles.addressRow}>
                     <View style={styles.iconDot}>
-                        <View style={styles.dotPickup} />
+                        <View style={styles.dotDelivery} />
                     </View>
                     <View style={styles.addressText}>
-                        <Text style={styles.addressLabel}>Retirada</Text>
-                        <Text style={styles.addressValue}>{item.pickup}</Text>
+                        <Text style={styles.addressLabel}>Destino</Text>
+                        <Text style={styles.addressValue}>{item.enderecoDestino || 'Endereço não informado'}</Text>
                     </View>
                 </View>
 
                 <View style={styles.addressRow}>
                     <View style={styles.iconDot}>
-                        <View style={styles.dotDelivery} />
+                        <Text style={{ fontSize: 10 }}>📏</Text>
                     </View>
                     <View style={styles.addressText}>
-                        <Text style={styles.addressLabel}>Entrega</Text>
-                        <Text style={styles.addressValue}>{item.delivery}</Text>
+                        <Text style={styles.addressLabel}>Distância</Text>
+                        <Text style={styles.addressValue}>{item.distanciaKm?.toFixed(2) || '0'} km</Text>
                     </View>
                 </View>
             </View>
 
             <View style={styles.cardFooter}>
                 <View style={styles.infoRow}>
-                    <Text style={styles.infoText}>📍 {item.distance}</Text>
-                    <Text style={styles.infoText}>⏱️ {item.time}</Text>
+                    <Text style={styles.infoText}>📍 {item.bairro || 'Bairro'}</Text>
+                    <Text style={styles.infoText}>🔢 {item.pedidoId?.replace('PEDIDO#', '') || 'N/A'}</Text>
                 </View>
                 <TouchableOpacity
-                    style={styles.acceptButton}
-                    onPress={() => handleAcceptOrder(item.id)}
+                    style={[
+                        styles.acceptButton,
+                        item.deliveryStatus === 'EM_PREPARO' && styles.acceptButtonDisabled
+                    ]}
+                    onPress={() => handleAcceptOrder(item.SK)}
+                    disabled={item.deliveryStatus === 'EM_PREPARO'}
                 >
-                    <Text style={styles.acceptButtonText}>Aceitar</Text>
+                    <Text style={[
+                        styles.acceptButtonText,
+                        item.deliveryStatus === 'EM_PREPARO' && styles.acceptButtonTextDisabled
+                    ]}>
+                        {item.deliveryStatus === 'EM_PREPARO' ? 'Em preparo...' : 'Aceitar'}
+                    </Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -275,7 +326,7 @@ export default function App() {
                 <FlatList
                     data={orders}
                     renderItem={renderOrderCard}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.SK || item.pedidoId || String(Math.random())}
                     contentContainerStyle={styles.listContent}
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={renderEmptyList}
@@ -455,10 +506,17 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: 'center',
     },
+    acceptButtonDisabled: {
+        backgroundColor: '#6b7280',
+        opacity: 0.6,
+    },
     acceptButtonText: {
         color: '#ffffff',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    acceptButtonTextDisabled: {
+        color: '#d1d5db',
     },
     emptyContainer: {
         flex: 1,
