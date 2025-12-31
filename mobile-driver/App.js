@@ -9,6 +9,7 @@ import {
     SafeAreaView,
     StatusBar,
     Alert,
+    Linking,
 } from 'react-native';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
@@ -69,6 +70,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 export default function App() {
     const [isAvailable, setIsAvailable] = useState(false);
     const [orders, setOrders] = useState([]);
+    const [myOrders, setMyOrders] = useState([]);
     const [hasLocationPermission, setHasLocationPermission] = useState(false);
 
     useEffect(() => {
@@ -83,31 +85,31 @@ export default function App() {
 
     const fetchOrders = useCallback(async () => {
         try {
-            console.log('📦 Buscando pedidos disponíveis...');
+            console.log('📦 Buscando pedidos...');
             const response = await fetch(`${API_URL}/pedidos/motoboy`);
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('📦 RAW DATA DO BACKEND:', JSON.stringify(data, null, 2));
                 console.log(`✅ ${data.length} pedidos recebidos do backend`);
 
-                // Filtrar apenas pedidos disponíveis (mesmo filtro do web app)
+                // Filtrar pedidos disponíveis
                 const availableOrders = data.filter(order => {
                     const isAvailableStatus = order.deliveryStatus === 'EM_PREPARO' ||
-                        order.deliveryStatus === 'AGUARDANDO_ENTREGA';
+                        order.deliveryStatus === 'AGUARDANDO_ENTREGA' ||
+                        order.deliveryStatus === 'AGUARDANDO_MOTOBOY';
                     const hasNoDriver = !order.motoboyId || order.motoboyId === null;
                     return isAvailableStatus && hasNoDriver;
                 });
 
-                console.log(`🔍 ${availableOrders.length} pedidos disponíveis após filtro`);
-                console.log('📋 Pedidos disponíveis:', availableOrders.map(o => ({
-                    id: o.SK,
-                    status: o.deliveryStatus,
-                    motoboyId: o.motoboyId,
-                    endereco: o.enderecoDestino
-                })));
+                // Filtrar meus pedidos
+                const driverOrders = data.filter(order => {
+                    return order.motoboyId === DRIVER_ID && order.deliveryStatus === 'EM_ENTREGA';
+                });
+
+                console.log(`🔍 ${availableOrders.length} disponíveis | ${driverOrders.length} meus pedidos`);
 
                 setOrders(availableOrders);
+                setMyOrders(driverOrders);
             } else {
                 console.log(`⚠️ Erro ao buscar pedidos: ${response.status}`);
             }
@@ -206,9 +208,65 @@ export default function App() {
         Alert.alert('Logout', 'Você saiu do sistema');
     };
 
-    const handleAcceptOrder = (orderId) => {
-        console.log(`✅ Pedido aceito: ${orderId}`);
-        Alert.alert('Pedido Aceito', `Pedido #${orderId} aceito com sucesso!`);
+    const handleAcceptOrder = async (orderId) => {
+        try {
+            console.log(`🚀 Aceitando pedido: ${orderId}`);
+
+            const response = await fetch(`${API_URL}/pedidos/${orderId}/aceitar`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ motoboyId: DRIVER_ID })
+            });
+
+            if (response.ok) {
+                console.log('✅ Pedido aceito com sucesso!');
+                Alert.alert('Sucesso', 'Pedido aceito! Verifique "Meus Pedidos"');
+                fetchOrders(); // Atualizar listas
+            } else {
+                const error = await response.json();
+                console.error('❌ Erro ao aceitar:', error);
+                Alert.alert('Erro', error.error || 'Pedido não disponível');
+            }
+        } catch (err) {
+            console.error('❌ Erro ao aceitar pedido:', err.message);
+            Alert.alert('Erro', 'Falha ao aceitar pedido');
+        }
+    };
+
+    const handleOpenMap = (order) => {
+        const endereco = order.enderecoDestino || 'Destino não informado';
+        const url = `https://www.google.com/maps/dir/?api=1&origin=current+location&destination=${encodeURIComponent(endereco)}`;
+
+        console.log(`🗺️ Abrindo Maps para: ${endereco}`);
+        Linking.openURL(url).catch(err => {
+            console.error('❌ Erro ao abrir Maps:', err);
+            Alert.alert('Erro', 'Não foi possível abrir o Google Maps');
+        });
+    };
+
+    const handleFinalizeOrder = async (orderId) => {
+        try {
+            console.log(`🏁 Finalizando pedido: ${orderId}`);
+
+            const response = await fetch(`${API_URL}/pedidos/${orderId}/finalizar`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ motoboyId: DRIVER_ID })
+            });
+
+            if (response.ok) {
+                console.log('✅ Pedido finalizado com sucesso!');
+                Alert.alert('Sucesso', 'Entrega finalizada!');
+                fetchOrders(); // Atualizar listas
+            } else {
+                const error = await response.json();
+                console.error('❌ Erro ao finalizar:', error);
+                Alert.alert('Erro', error.error || 'Falha ao finalizar');
+            }
+        } catch (err) {
+            console.error('❌ Erro ao finalizar pedido:', err.message);
+            Alert.alert('Erro', 'Falha ao finalizar pedido');
+        }
     };
 
     const renderOrderCard = ({ item }) => (
@@ -264,6 +322,60 @@ export default function App() {
         </View>
     );
 
+    const renderMyOrderCard = ({ item }) => (
+        <View style={styles.card}>
+            <View style={styles.cardHeader}>
+                <Text style={styles.clientName}>{item.nomeCliente || 'Cliente'}</Text>
+                <Text style={styles.orderValue}>R$ {item.valorFrete?.toFixed(2) || '0.00'}</Text>
+            </View>
+
+            <View style={styles.addressSection}>
+                <View style={styles.addressRow}>
+                    <View style={styles.iconDot}>
+                        <View style={styles.dotDelivery} />
+                    </View>
+                    <View style={styles.addressText}>
+                        <Text style={styles.addressLabel}>Destino</Text>
+                        <Text style={styles.addressValue}>{item.enderecoDestino || 'Endereço não informado'}</Text>
+                    </View>
+                </View>
+
+                <View style={styles.addressRow}>
+                    <View style={styles.iconDot}>
+                        <Text style={{ fontSize: 10 }}>📏</Text>
+                    </View>
+                    <View style={styles.addressText}>
+                        <Text style={styles.addressLabel}>Distância</Text>
+                        <Text style={styles.addressValue}>{item.distanciaKm?.toFixed(2) || '0'} km</Text>
+                    </View>
+                </View>
+            </View>
+
+            <View style={styles.cardFooter}>
+                <View style={styles.infoRow}>
+                    <Text style={styles.infoText}>📍 {item.bairro || 'Bairro'}</Text>
+                    <Text style={styles.infoText}>🔢 {item.pedidoId?.replace('PEDIDO#', '') || 'N/A'}</Text>
+                </View>
+
+                <View style={styles.buttonRow}>
+                    <TouchableOpacity
+                        style={[styles.mapButton, { flex: 1, marginRight: 6 }]}
+                        onPress={() => handleOpenMap(item)}
+                    >
+                        <Text style={styles.mapButtonText}>🗺️ ROTA</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.finalizeButton, { flex: 1, marginLeft: 6 }]}
+                        onPress={() => handleFinalizeOrder(item.SK)}
+                    >
+                        <Text style={styles.finalizeButtonText}>🏁 FINALIZAR</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View >
+    );
+
     const renderEmptyList = () => (
         <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>📦</Text>
@@ -275,6 +387,7 @@ export default function App() {
             </Text>
         </View>
     );
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -332,6 +445,22 @@ export default function App() {
                     ListEmptyComponent={renderEmptyList}
                 />
             </View>
+
+            {/* Meus Pedidos */}
+            {myOrders.length > 0 && (
+                <View style={styles.myOrdersSection}>
+                    <Text style={styles.sectionTitle}>
+                        Meus Pedidos ({myOrders.length})
+                    </Text>
+                    <FlatList
+                        data={myOrders}
+                        renderItem={renderMyOrderCard}
+                        keyExtractor={(item) => item.SK || item.pedidoId || String(Math.random())}
+                        contentContainerStyle={styles.listContent}
+                        showsVerticalScrollIndicator={false}
+                    />
+                </View>
+            )}
         </SafeAreaView>
     );
 }
@@ -538,5 +667,38 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#9ca3af',
         textAlign: 'center',
+    },
+    myOrdersSection: {
+        flex: 1,
+        marginTop: 8,
+        borderTopWidth: 2,
+        borderTopColor: '#374151',
+        paddingTop: 16,
+    },
+    buttonRow: {
+        flexDirection: 'row',
+        marginTop: 12,
+    },
+    mapButton: {
+        backgroundColor: '#3b82f6',
+        paddingVertical: 12,
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+    mapButtonText: {
+        color: '#ffffff',
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+    finalizeButton: {
+        backgroundColor: '#22c55e',
+        paddingVertical: 12,
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+    finalizeButtonText: {
+        color: '#ffffff',
+        fontSize: 14,
+        fontWeight: 'bold',
     },
 });

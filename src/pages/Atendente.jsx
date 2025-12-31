@@ -289,11 +289,11 @@ export default function Atendente() {
                         </h2>
 
                         <div className="space-y-3">
-                            {orders.filter(o => o.status === 'ENTREGUE').length === 0 ? (
+                            {orders.filter(o => o.status === 'ENTREGUE' || o.status === 'CONCLUIDO').length === 0 ? (
                                 <p className="text-text-secondary text-center py-8">Nenhum pedido concluído.</p>
                             ) : (
                                 orders
-                                    .filter(o => o.status === 'ENTREGUE')
+                                    .filter(o => o.status === 'ENTREGUE' || o.status === 'CONCLUIDO')
                                     .map(order => (
                                         <div key={order.id} className="p-3 bg-brand-bg rounded border border-gray-800">
                                             <div className="flex justify-between items-start mb-1">
