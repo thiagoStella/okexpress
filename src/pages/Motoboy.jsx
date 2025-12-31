@@ -16,6 +16,18 @@ export default function Motoboy() {
     const availableOrders = orders.filter(o => (o.status === 'AGUARDANDO_ENTREGA' || o.status === 'EM_PREPARO') && !o.motoboyId);
     const myOrders = orders.filter(o => o.motoboyId === user?.id && o.status !== 'ENTREGUE');
 
+    // DEBUG: Log filter results
+    console.log('📋 DEBUG MOTOBOY PAGE: Total orders:', orders.length);
+    console.log('📋 DEBUG MOTOBOY PAGE: Available orders:', availableOrders.length);
+    console.log('📋 DEBUG MOTOBOY PAGE: My orders:', myOrders.length);
+    if (orders.length > 0) {
+        console.log('📋 DEBUG MOTOBOY PAGE: First order details:', {
+            status: orders[0].status,
+            motoboyId: orders[0].motoboyId,
+            address: orders[0].address
+        });
+    }
+
     // Calculate total earnings from delivered orders
     const totalEarnings = orders
         .filter(o => o.motoboyId === user?.id && o.status === 'ENTREGUE')
