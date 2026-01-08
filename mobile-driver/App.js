@@ -212,10 +212,16 @@ export default function App() {
         try {
             console.log(`🚀 Aceitando pedido: ${orderId}`);
 
-            const response = await fetch(`${API_URL}/pedidos/${orderId}/aceitar`, {
-                method: 'PUT',
+            const url = `${API_URL}/pedido/${encodeURIComponent(orderId)}/status`;
+            console.log(`📡 URL completa: ${url}`);
+
+            const response = await fetch(url, {
+                method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ motoboyId: DRIVER_ID })
+                body: JSON.stringify({
+                    deliveryStatus: 'EM_ENTREGA',
+                    motoboyId: DRIVER_ID
+                })
             });
 
             if (response.ok) {
@@ -235,7 +241,8 @@ export default function App() {
 
     const handleOpenMap = (order) => {
         const endereco = order.enderecoDestino || 'Destino não informado';
-        const url = `https://www.google.com/maps/dir/?api=1&origin=current+location&destination=${encodeURIComponent(endereco)}`;
+        // Removido "origin" - Google Maps usa GPS automaticamente quando origem não é especificada
+        const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(endereco)}`;
 
         console.log(`🗺️ Abrindo Maps para: ${endereco}`);
         Linking.openURL(url).catch(err => {
